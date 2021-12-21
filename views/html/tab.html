@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>탭</title>
+
+        <link rel="stylesheet" href="../css/slide.css">
+        <!-- 합쳐지고 최소화된 최신 CSS -->
+
+
+
+        <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+
+
+  
+    </head>
+
+    <style>
+        ul.list {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	border-bottom: 1px solid #ccc;
+  }
+  ul.list::after {
+	content: '';
+	display: block;
+	clear: both;
+  }
+  .tab-button {
+	display: block;
+	padding: 10px 20px 10px 20px;
+	float: left;
+	margin-right: -1px;
+	margin-bottom: -1px;
+	color: grey;
+	text-decoration: none;
+	cursor: pointer;
+  }
+  .active {
+	border-top: 2px solid orange;
+	border-right: 1px solid #ccc;
+	border-bottom: 1px solid white;
+	border-left: 1px solid #ccc;
+	color: black;
+	margin-top: -2px;
+  }
+  .tab-content {
+	display: none;
+	padding: 10px;
+  }
+  .show {
+	display: block;
+  }
+
+
+    </style>
+
+    <body>
+
+
+        <div class="container mt-5">
+            <ul class="list">
+                <li class="tab-button active">Products</li>
+                <li class="tab-button">Information</li>
+                <li class="tab-button">Shopping</li>
+            </ul>
+        
+            <div class="tab-content show">
+                <p>상품설명입니다. Product</p>
+            </div>
+            <div class="tab-content">
+                <p>상품정보입니다. Info</p>
+            </div>
+            <div class="tab-content">
+                <p>배송정보입니다. Shopping</p>
+            </div>
+        </div>
+ 
+
+
+
+
+
+    <script src = "../js/tab.js"></script>
+
+
+
+
+
+
+
+    </body>
+</html>

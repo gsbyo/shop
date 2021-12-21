@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>슬라이드</title>
+
+
+        <script
+        src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+        crossorigin="anonymous"></script>
+  
+  </head>
+
+    
+
+    <body>
+
+  
+        <div class = "slide-container" style="margin: 0 auto;">
+         <div class = "slide-wrap">
+            <div class = "img-box">
+                <img src="/public/image/banner/banner1.jpg">
+            </div>
+            <div class = "img-box">
+              <img src="/public/image/banner/banner2.jpg">
+            </div>
+            <div class = "img-box">
+              <img src="/public/image/banner/banner3.jpg">
+            </div>
+            <div class = "img-box">
+              <img src="/public/image/banner/banner4.jpg">
+            </div>
+         </div> 
+
+        <button class="pre-btn" id="next" style="color: rgb(255,102,102);">&#10094;</button>     
+        <button class="next-btn" id="next" style="color: rgb(255,102,102);">&#10095;</button>         
+        </div>
+   
+        <script>
+
+          var position = 1;
+
+          var imgcount = $('.img-box').length;
+          console.log(imgcount);
+          var imgsize = $('.img-box').width();
+
+          var auto = setInterval(slide_auto,3000);
+          
+          $('.pre-btn').click(function(){
+            if(position == 1){
+            }else{
+              --position;
+               슬라이드버튼((position-1)*imgsize);
+               stop();
+               start();
+            }
+          })
+
+          $('.next-btn').click(function(){
+            if(position == imgcount){
+            }else{
+               슬라이드버튼(imgsize*position);
+               ++position;
+               stop();
+               start();
+            }
+          })
+
+         function 슬라이드버튼(오른쪽){
+            $('.slide-wrap').css('transform','translateX(-'+오른쪽+'px)');
+         }
+
+         function slide_auto(){
+          if(position == imgcount){
+            position = 1;
+            슬라이드버튼(0);
+           }else{
+          슬라이드버튼(imgsize*position);
+           ++position;
+          }       
+
+         }
+
+         function start(){
+           if(auto){
+             auto = setInterval(slide_auto,3000);
+           }
+         }
+
+         function stop(){
+           clearInterval(auto);
+         }
+         
+
+        </script>
+
+
+
+
+
+
+    </body>
+
+
+</html>

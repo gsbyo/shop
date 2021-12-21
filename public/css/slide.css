@@ -1,0 +1,66 @@
+body {
+  font-family: 'Bebas Neue', cursive;
+  font-family: 'Black Han Sans', sans-serif;
+ }
+ 
+
+.slide-container{
+    overflow: hidden;
+    width: 1200px;
+   
+    
+  }
+
+.slide-wrap{
+  width:4800px;
+
+}
+
+
+.img-box {
+  width:1200px;
+  height: 400px;
+  float:left;
+
+}
+
+
+.img-box img{
+  width: 100%;
+  height: 100%;
+}
+
+
+.pre-btn{
+  width: 50px;
+  height: 60px;
+  position: relative;
+  float:left;
+  transform: translateY(-250px);
+  opacity: 0;
+  font-size: 50px;
+  background-color: transparent;
+  border: 0;
+}
+
+.next-btn{
+  width: 50px;
+  height: 60px;
+  position: relative;
+  float:right;
+  transform: translateY(-250px);
+  opacity: 0;
+  font-size: 50px;
+  background-color: transparent;
+  border: 0;
+  
+}
+
+
+.slide-container:hover .next-btn{
+  opacity: 0.8;
+}
+.slide-container:hover .pre-btn{
+  opacity: 0.8;
+}
+

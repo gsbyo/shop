@@ -1,0 +1,30 @@
+.login-container{
+    width: 600px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+
+.form-group{
+    padding: 10px;
+}
+
+
+.basic-btn{
+    border: 0;
+    color: white;
+    background-color: rgb(255,102,102);
+    padding: 10px;
+    border-radius: 4px;
+    margin-right: 10px;
+ 
+}
+
+.button-wrap{
+    text-align: right;
+}
+
+input:focus {
+   outline: 0;
+}

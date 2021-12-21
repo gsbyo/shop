@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  
+  <link rel="stylesheet" href="/public/css/menu.css" type="text/css">
+  <link rel="stylesheet" href="/public/css/slide.css" type="text/css">
+  <link rel="stylesheet" href="/public/css/homeView.css" type="text/css">
+
+  <title>Gsb 쇼핑몰</title>
+
+</head>
+
+<%- include('html/menu.html') %>
+<%- include('html/silde.html') %>
+
+
+<body style="background-color:#f7f9fc;">
+
+<div class="item-container">
+  <% for(var i=0; i < posts.length; ++i){ %>
+    <div class="item-box" onclick="location.href='/items/detail/item?itemid=<%= posts[i]._id %>';">
+      <div class="item-imgbox">
+        <img src="../public/image/item/<%= posts[i].이미지 %>">
+      </div>
+      <div class="item-textbox">
+        <div>
+        <p><%= posts[i].상품 %></p>
+        <p><%= posts[i].가격 %></p>
+      </div>
+      </div>
+    </div>
+<% } %>
+
+
+<script>
+ 
+
+</script>
+
+</body>
+</html>

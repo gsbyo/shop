@@ -1,0 +1,25 @@
+.home-button{
+    border: 0;
+    padding: 20px;
+    background-color: rgb(255,102,102);
+    border-radius: 5px;
+    color: white;
+    font-size: 20px;
+}
+
+.box{
+    width: 1200px;
+    
+    display: flex;
+    margin: 0 auto;
+    text-align: center;
+    align-items: center;
+    
+    justify-content: center;
+
+}
+
+.box p {
+    font-size: 20px;
+    color: rgb(255,102,102);
+}

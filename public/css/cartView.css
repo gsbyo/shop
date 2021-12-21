@@ -1,0 +1,77 @@
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+
+body {
+    font-family: 'Bebas Neue', cursive !important;
+    font-family: 'Black Han Sans', sans-serif !important;
+}
+
+.header{
+    width: 1200px;
+    margin: 0 auto;
+    text-align: left;
+    border-bottom:1px solid rgb(255,102,102);
+    
+}
+
+.header img{
+    width: 200px;
+    height: 100px;
+    
+}
+
+
+.cart-list{
+    width: 1200px;
+    margin: 0 auto;
+    text-align: left;
+}
+
+.list-box{
+    display: flex;
+    border-bottom:1px solid rgb(255,102,102);
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    color: rgb(255,102,102);
+}
+.list-box img{
+    margin-right: 20px;
+}
+
+.cancel-button{
+    border: 0;
+    color: white;
+    background-color: rgb(255,102,102);
+    border-radius: 5px;
+}
+
+.button-wrap{
+    width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.pay-button{
+    padding: 10px;
+    border: 0;
+    color: white;
+    background-color: rgb(255,102,102);
+    border-radius: 5px;
+    
+    
+}
+
+.amount{
+    width: 50px;
+    margin-left: 10px;
+    padding-left: 10px;
+    color: rgb(255,102,102);
+    border: 1px solid rgb(255,102,102);
+}
+

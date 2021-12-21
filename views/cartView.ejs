@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+
+    <!-- JQuery-->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+
+
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Black+Han+Sans&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/public/css/cartView.css">
+
+</head>
+
+  <div class="header">
+    <img src = "/public/image/logo2.JPG">    
+    <h2 style="color: rgb(255,102,102); text-align: center;">장바구니 내역</h2>
+  </div>
+
+  <div class="cart-list">
+   <% for(var i = 0; i < posts.length; ++i){ %>
+    <div class="list-box">
+      <img src= "/public/image/item/<%= posts[i].이미지 %>" style='width:100px; height:100px' ; />
+       <div>
+        <p class="item-name"><label>상품명 :</label><%= posts[i].상품 %> </p> 
+        <p class="item-price"><label>가격 :</label> <%= posts[i].가격 %>  </p> 
+        <p><label>수량 :</label><input type="number" class="amount" name="amount" value="<%= basket[i].amount %>"> </p> 
+        </div>
+        <button type="button" style="width: 30px; height: 30px; margin-left: 20px; float: right;" class="cancel-button" data-num=<%= posts[i]._id %>>X</button>
+    </div>
+    <% } %>
+  </div>
+  <div class="button-wrap">
+  <button class="pay-button">구매하기</button>
+</div>  
+
+  <script>
+    $('.pay-button').on('click',function(){
+       
+  
+      var order_num = new Date().getTime();
+      
+      var id = [];
+      var count = [];
+      var query = "";
+      var cart_num = new Date().getTime();
+
+      // 이게 버튼을 눌렀을때 
+      for(var i = 0; i < $('.cancel-button').length; ++i){
+       id.push($('.cancel-button').eq(i).data('num'));
+       count.push($('.amount').eq(i).val());
+
+       query += id[i]+'%A'+count[i]+'%';
+       
+      }
+   
+     query = query.substring(0, query.length-1);
+
+   
+     console.log(query);
+
+     
+      $(location).attr('href','/cart/pay/'+cart_num+'?items='+query);
+
+      // item테이블의 재고 업데이트
+      // 구매자의 결제상태, 배송상태 체크해주는 결제테이블
+      // 결제페이지로 넘어갔을때 결제 X - > O 
+    
+    })
+
+    //장바구니 목록 취소 
+    $('.cancel-button').on('click',function(){ 
+      $(this).parent().remove();
+      var 장바구니제외 = ($(this).data('num'));
+      
+      $.ajax({
+        method: 'delete',
+        url: '/cart/del',
+        data: { 
+          del_id : 장바구니제외 
+        }
+
+      }).done(function (res) {
+        alert('전송완료');
+      }).fail(function (err) {
+        alert(err);
+      });
+    })
+
+  
+ 
+  </script>
+
+
+<body>
+
+</body>
+
+</html>

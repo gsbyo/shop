@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gsb 쇼핑몰</title>
+
+    <link rel="stylesheet" href="/public/css/menu.css" type="text/css">
+    <link rel="stylesheet" href="/public/css/homeView.css" type="text/css">
+    <link rel="stylesheet" href="/public/css/searchView.css" type="text/css">
+
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Black+Han+Sans&display=swap"
+        rel="stylesheet">
+
+
+</head>
+
+<body style="background-color:#f7f9fc;">
+
+    <%- include('html/menu.html') %>
+
+        <p style="text-align: center; margin-top: 20px; font-size: 100px; color:rgb(255, 102, 102);">상품 검색</p>
+        <div class="result-input">
+            <label style="margin-right: 30px; color: rgb(255, 102, 102);">검색어</label>
+            <input type="text" id="search-text"
+                style="border-radius: 5px; border: 0.5px solid; border-color: rgb(255, 102, 102); padding-left: 10px;">
+            <button class="basic-button search-button">검색하기</button>
+        </div>
+
+        <div class="result-list">
+            <div class="result-none">
+                <a>검색된 상품이 없습니다.</a>
+            </div>
+            <% for(var i=0; i < search-res.length; ++i){ %>
+                <div class="list-box" onclick="location.href='/items/detail/item?itemid=<%= 검색결과[i]._id %>'">
+                    <div class="img-box">
+                        <img src="/public/image/item/<%= search-res[i].이미지 %>">
+                    </div>
+                    <div class="text-box">
+                        <a>
+                            <%= search-res[i].상품 %>
+                        </a>
+                        <a>
+                            <%= search-res[i].가격 %>
+                        </a>
+                    </div>
+                </div>
+                <% } %>
+        </div>
+
+        <script>
+            var result = '<%= search-res.length %>'
+
+            if (result > 0) { // 검색결과가 있으면
+                $('.result-none').hide();
+                $('.list-box').show();
+            } else {
+                $('.list-box').hide();
+                $('.result-none').show();
+            }
+
+            //받아온 값이 없으면 none 활성화 
+            //있으면 값이 있으면 list 활성화
+
+
+            $('.search-button').on('click',function(){
+                var value = $('#search-text').val();
+                if (value == "") {
+                    alert('검색어를 입력해주세요');
+                } else {
+                    $(location).attr('href', '/search?value=' + value);
+                }
+            });
+        </script>
+
+</body>
+
+</html>
+

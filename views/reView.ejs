@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- JQuery-->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <link rel="stylesheet" href="/public/css/reView.css" type="text/css">
+</head>
+
+<body>
+    <div style="width: 100%; text-align: center;">
+        <h1>리뷰 등록</h1>
+        
+        <div style="margin-bottom: 20px;">
+        <div class="select-box">
+            
+        </div>
+
+        <div class="scroll-box">
+            <% if(item.length > 0) { %>
+            <li class="option selected" data-num="<%= item[0]._id %>">상품 번호 <%= item[0]._id %></li>
+            <% for(var i = 1; i < item.length; ++i){ %>
+                <% if(item.length > 4) return; %>
+            <li class="option" data-num="상품 번호 <%= item[i]._id %>">상품 번호 <%= item[i]._id %></li>
+            <% } %>
+
+            <% } %>
+           
+        </div>
+    </div>
+
+        <table class="re-table">
+            <tr>
+                <td style="width: 100px; height: 50px;">제목</td>
+                <td style="padding-left:5x; padding-right: 10px;"><input id="title" type="text"
+                        style="border: 0; width: 95%; font-size: 15px;"></td>
+            </tr>
+            <tr>
+                <td>내용</td>
+                <td><textarea style="border: 0;" id="content" cols="100" rows="30"></textarea></td>
+            </tr>
+            <tr>
+                <td>사진</td>
+                <td style="word-break: break-all; width: 700px; text-align: left;">
+                    <div class="img-wrap">
+                        <div class="add-wrap">
+                            <button class="add-img">+</button>
+                        </div>
+                    </div>
+                    <form class="re-form" id='re-form' method="post" enctype='multipart/form-data'
+                        action="/review/test">
+                        <div class="img-input">
+                            <input type="file" id="file" name="file[]" data-num="0" style="display: none;">
+                    </form>
+    </div>
+    </td>
+    </tr>
+
+    </table>
+    <button class="submit-review">등록하기</button>
+    </div>
+
+
+
+    <script>
+        var file_id = 0;
+        var file_count = 0;
+        var sel_files = [];
+        var is_selected = false;
+
+
+        review_get();
+
+        //select 를 js로 만들어봄 
+        //일반적 option의 경우 css 접근이 불가능함.
+
+        function review_get(){
+        $('.select-box').children().remove();
+        $('.select-box').append(`<li>${$('.selected').text() }</li>`);
+
+        }
+
+        $('.select-box').on('click',function(){
+           if(is_selected){
+            $('.scroll-box').hide();
+            is_selected = false;
+           }else{
+            $('.scroll-box').show();
+            is_selected = true;
+           }
+        });
+
+        $('.option').on('click',function(){
+            $('.option').removeClass('selected');
+            $(this).addClass('selected');
+            $('.scroll-box').hide();
+            is_selected = false;
+            review_get();
+        });
+        
+
+      
+
+
+        
+
+        $('.add-img').on('click', function () {
+            $("input[name='file[]']")[file_id].click();
+        });
+
+
+        //파일을 가져오는 과정
+        function readInputFile(e) {
+
+            var files = e.target.files;
+            var fileArr = Array.prototype.slice.call(files);
+
+
+
+            fileArr.forEach(function (f) {
+                if (!f.type.match("image/.*")) {
+                    alert("이미지 확장자만 업로드 가능합니다.");
+                    return;
+                };
+                if (file_count < 4) {
+                    sel_files.push(f.name);
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        src = e.target.result;
+                        img_name = f.name;
+                        $('.img-wrap').css('display', 'inline-block');
+                        $('.img-wrap').prepend(
+                            `<div class="img-box">
+                            <img src=${e.target.result} data-file=${f.name} />
+                            <button type="button" class="cancel-button" data-id = ${file_id}>X</button>
+                            </div>`
+                        );
+
+                        $('.cancel-button').on('click', function () {
+                            $(this).parent().remove();
+
+                            $("input[name='file[]']").eq([$(this).data('id')]).val('');
+                            sel_files[$(this).data('id')] = '';
+                            file_count--;
+
+                            if (file_count < 4) {
+                                $('.add-img').css('display', '');
+                            }
+                        });
+
+                        ++file_id;
+                        ++file_count;
+
+                        $('.img-input').append(`
+                               <input type="file" id="file" name="file[]" data-num=${file_id} style="display: none;">
+                        `)
+
+                        if (file_count >= 4) {
+                            $('.add-img').css('display', 'none');
+                        }
+
+                    };
+
+                    reader.readAsDataURL(f);
+                }
+
+
+
+
+            })
+        }
+
+        $(document).on('change', '#file', readInputFile);
+
+
+        $('.submit-review').on('click', function () {
+            var title = $('#title').val();
+            var content = $('#content').val();
+            var review_id = $('.selected').data('num');
+       
+            
+
+            //배열의 null 처리
+            sel_files  = sel_files.filter(function(item) {
+            return item !== null && item !== undefined && item !== '';
+            });
+
+            console.log(sel_files);
+
+            
+
+
+            $.ajax({
+                method: 'post',
+                url: '/review',
+                data: {
+                    item_id : review_id,
+                    img : sel_files,
+                    title: title,
+                    content: content
+                }
+            }).done(function (결과) {
+            }).fail(function (에러) {
+                alert(에러);
+            });
+
+            $('.re-form').submit();
+
+        });
+
+
+
+    </script>
+    
+    </body>
+    
+    </html>

@@ -1,0 +1,52 @@
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;             
+    margin: 0;         
+} 
+
+
+.order-wrap{
+    width: 1200px;
+    text-align: center;
+    margin: 0 auto;
+    color: rgb(255,102,102);
+  }
+  
+
+  .order-box{
+    width: 100%;
+    display: flex;
+    border-radius: 4px;
+    box-shadow: 1px 1px 2px 1px rgb(255,200,200);
+    margin-bottom: 20px;
+    align-items: center;
+  }
+  
+  .in-box {
+    display: flex;
+    width: 100%;
+    padding: 10px;
+    align-items: center;
+   
+  }
+
+  .in-box p{
+    padding: 10px;
+  }
+
+
+  .dlvy-num{
+      margin-left: 20px;
+      margin-right: 20px;
+      width: 200px;
+  }
+
+  .input-button{
+    border: 0;
+    background-color: rgb(255,102,102);
+    color: white;
+    border-radius: 5px;
+    padding: 10px;
+  }
+
+ 

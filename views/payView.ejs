@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+
+    
+    <link rel="stylesheet" href="/public/css/payView.css" type="text/css">
+</head>
+
+<body style="background-color:#f7f9fc;">
+
+<div style="width: 100%; border-bottom: 1px solid rgb(255,102,102);">
+    <div style="width:1200px; margin: 0 auto;">
+    <img src="/public/image/logo2.JPG" style="width:200px">
+   </div> 
+</div>
+ 
+
+<div class="container">
+    <h1 style="text-align: center; color: rgb(255,102,102);">주문 / 결제</h1>
+<div class="buyer-info">
+    <h2 style="text-align: left; color: rgb(255,102,102); padding: 10px;">구매자 정보</h2>
+    <table class="info-table">
+        <tr>
+            <td>이름</td>
+            <td>기승범</td>
+        </tr>
+        <tr>
+            <td>이메일</td>
+            <td>gsbyo6@naver.com</td>
+        </tr>
+        <tr>
+            <td>휴대폰</td>
+            <td>010-3928-9747</td>
+        </tr>
+        
+    </table>
+</div>
+<div class="buyer-address">
+    <h2 style="text-align: left; color: rgb(255,102,102); padding: 10px;">배송지</h2>
+    <table class="address-table">
+        <tr>
+            <td>이름</td>
+            <td>기승범</td>
+        </tr>
+        <tr>
+            <td>배송주소</td>
+            <td>대구광역시 **** - ****</td>
+        </tr>
+        <tr>
+            <td>연락처</td>
+            <td>010-3928-9747</td>
+        </tr>
+        <tr>
+            <td>배송사항</td>
+            <td>문 앞</td>
+        </tr>
+    </table>
+</div>
+
+<div class="pay-info">
+    <h2 style="text-align: left; color: rgb(255,102,102); padding: 10px;">결제정보</h2>
+   
+<% for(var i = 0; i < items.length; ++i){%>
+    <div style="padding: 10px;">
+    <a class="id" data-num = <%= items[i]._id %>><%= items[i].상품 %></a>
+    <a><%=  items[i].가격 %></a>
+    <a>수량 : <%= count[i] %> </a>
+</div>
+<%}%>
+<div style="padding: 10px;">
+    <select id = "pay-method">
+        <option value="vbank">가상계좌</option>
+    </select>
+<a style="font-weight: bold;">총결제금액 : <%= totalpay %></a>
+</div>
+
+</div>
+
+<div style="margin-top: 30px;"> 
+    <button class="pay-button basic-btn">결제하기</button>
+    <button class="complete-button basic-btn">결제완료</button>
+</div>
+
+</div>
+
+    <script>
+        //경로에 따라서 ajax를 보내는 url이 달라짐.
+        IMP.init('iamport');    
+
+        var str = $(location).attr('pathname').split('/')
+        var items_name = "";
+        var items_len = parseInt('<%= items.length %>')
+        var method = $('#pay-method option:selected').val();
+
+        
+        if(items_len > 1){
+            items_name = '<%= items[0].상품 %>' + ' 외 '+ (items_len - 1) + '개'
+        }else{
+           items_name = '<%= items[0].상품 %>';
+        }
+        var id;     
+
+        const totalpay =  parseInt ('<%= totalpay %>');
+        
+
+        $('.pay-button').on('click', function () {
+            if (str[1] == 'cart') {     // 장바구니에서 구매 case
+                var sel = $('.id');
+                id = [];
+                for (var i = 0; i < sel.length; ++i) {
+                    id.push(sel.eq(i).data('num'));
+                }
+            }else {        // 바로구매 case
+                id = '<%= items[0]._id %>';
+            }
+                IMP.request_pay({
+                    pg: 'inicis', // version 1.1.0부터 지원.
+                    pay_method: 'vbank',
+                    merchant_uid: 'merchant_' + new Date().getTime(),
+                    name: items_name, 
+                    amount: totalpay, 
+                    buyer_email: 'gsbyo6@naver.com',
+                    buyer_name: 'test',
+                    buyer_tel: '010-3928-9747',
+                    buyer_addr: '대구광역시 **** - ****',
+                    buyer_postcode: '123-456',
+                }, function (rsp) {
+                    if (rsp.success) {
+                        $.ajax({
+                            method: 'post',
+                            url: '/payment/update',
+                            data: {
+                                imp_uid: rsp.imp_uid,
+                                merchant_uid: rsp.merchant_uid,
+                                item_id: id,
+                                pay_method : method
+                            }
+                        }).success(function (res){
+                           
+                        }).fail(function (err){
+                            alert(err);
+                        });
+                    }
+                    else{
+                      alert("결제에 실패하였습니다. 에러 내용: " +  rsp.error_msg);
+                      //결제 취소 후의 history가 3개 정도 발생하는데 이유를 모르겠음.
+                      //쿠팡 결제페이지에서도 비슷한 현상이 보임.
+                    }
+                });
+        });
+
+        $('.complete-button').on('click',function(){
+            $.ajax({
+                    method: 'post',
+                    url: '/payment/complete',
+                    data: {
+                        imp_uid: 1,
+                        merchant_uid: 2,
+                        item_id: $('.id').data('num'),
+                        pay_method : "card"
+                    }
+                }).done(function (res) {
+                    location.replace('/order');
+                }).fail(function (err) {
+                    alert(err);
+                });
+
+        })
+
+
+       
+
+    </script>
+    
+    
+    </body>
+
+</html>
+
+

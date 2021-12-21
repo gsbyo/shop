@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/public/css/mypageView.css" type="text/css">
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <%- include('html/cofig.html') %>
+    
+
+</head>
+   
+
+<body style="background-color:#f7f9fc;">
+
+    <%- include('html/menu.html') %>
+
+
+    <div>
+    <div class='container'>
+        <div class="header" style="margin-top: 30px; display: none;">
+            <div style="width: 80%; height: 100%; border: 1px solid black;">
+                <p>현재 기능은 주문 목록 / 배송조회만 가능합니다.</p>
+            </div>
+         
+            </div>
+
+        <div class="bg-container">
+        <div class="list-box">
+          <ul>
+              <li class="focus">주문목록/배송조회</li>
+              <li>취소/환불 내역</li>
+              <li>영수증 조회/출력</li>
+          </ul>
+        </div>
+
+        <div class="order-wrap">
+               <% for(var i=0; i<order.length; ++i){ %>
+         <div class="order-box">
+            <div class="order-item">
+              <div style="padding: 10px; color: rgb(255,102,102); display: flex; border-bottom: 0.5px solid rgb(255,200,200);">
+                <% if(order[i].status == 'ok'){ %>
+                    <p>결제완료</p>
+                    <p>결제금액 : <%= order[i].totalpay %>원</p>
+                   <% } if(order[i].status == 'dlvy_ing'){ %>
+                    <p>배송중</p>
+                    
+                    <p>결제금액 : <%= order[i].totalpay %>원</p>
+                    <% } %>
+              </div>
+             <% if(order[i].count.length <= 1){ %>    
+            <div class="out-box">
+                <div class="in-box">
+                <img src="/public/image/item/logo2.JPG">
+                <p><%= order[i].item_name %> <%= order[i].count %>개 <%= order[i].item_price %>원 </p>
+            </div>
+             </div>
+            <% }else{ %>
+           <div class="out-box">
+            <% for(var j=0; j < order[i].count.length; ++j){ %>
+            <div class="in-box">
+            <img src="/public/image/item/logo2.JPG">
+            <p><%= order[i].item_name[j] %> <%= order[i].count[j] %>개 <%= order[i].item_price[j] %>원 </p>
+             </div>
+            <% } %>
+            
+          </div>
+          <% } %>
+        </div>
+             <% if(order[i].status == 'dlvy_ing'){ %>
+                <div class="track-box">
+                    <p class="invoice" style="display: none;"><%= order[i].dlvy_num %></p>
+                    <button class="track-button">배송조회</button>
+                </div>                      
+             <% } %>
+         </div>
+        
+            <% } %>
+        </div>
+      
+
+    </div>
+</div>
+</div>
+
+<script>
+
+
+
+    $('.track-button').on('click',function(){
+      
+        var t_invoice = $(this).prev().text();
+        console.log(t_invoice);
+
+        var url = '/track/'+t_invoice;
+
+        var popup = window.open(url, '배송정보','top=200, left=300,width=400px,height=500px,scrollbars=yes status=no, menubar=no, toolbar=no');
+        
+    })
+
+  
+</script>
+
+</body>
+
+</html>

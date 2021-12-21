@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+   
+    <meta charset="utf-8">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    
+ 
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    
+ 
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+
+        <link rel="stylesheet" href="/public/css/addView.css">
+
+    <!-- path = /public/image/item -->
+
+        
+</head>
+<title>상품 추가 페이지</title>
+</head>
+
+<body>
+
+    <div class="wrap-container">
+        <ul class="tab-container">
+            <li class="tab-link" style="border-right: 1px solid white;">상품 추가</li>
+            <li class="tab-link disable">상품 수정/삭제</li>
+        </ul>
+    </div>
+ 
+  <div class="container">
+      <form class="add-form box-1" id='add-form' method="post" enctype='multipart/form-data' action="/add_img/item">
+          <div class="img-box"> 
+            <div class="img-wrap">
+            </div>
+            <div class="button-wrap">
+                <input type="button" class="img-add" value="+">      
+                <input type="file" id="img-file" name="imgfile[]" data-num="0" style="display: none;" >
+                
+                <input type="button" class="img-edit" value="+" style="display: none;">   
+                <input type="file" id="edit-file" name="editfile" style="display: none;">
+
+            </div>
+          </div>
+          <div class="item-box">
+            <div class="item-wrap">
+                <div class='input-item' style="display: none;">
+                    <label>번호</label>
+                    <input type="text" id="id" name="id">
+                </div>
+                <div class='input-item'>
+                    <label>상품</label>
+                    <input type="text" id="name" name="name">
+                </div>
+                <div class='input-item'>
+                    <label>가격</label>
+                    <input type="number" id="price" name="price">
+                </div> 
+                <div class='input-item'>
+                    <label>분류</label>
+                    <select id = "category">
+                        <option value="상의">상의</option>
+                        <option value="하의">하의</option>
+                        <option value="아우터">아우터</option>
+                    </select>
+
+                  
+                   
+                </div> 
+                <div class='input-item'>
+                    <label>재고</label>
+                    <input type="text" id="inven" name="inven">
+                </div> 
+          </div>
+          </div>
+      
+  
+      <div class="add-wrap">
+      <button type="button" class="add-button btn-basic">추가하기</button>
+     </div>
+</form>
+
+<div class="result-input" style="margin-top: 20px; text-align: center; display: none;">
+    <label style="margin-right: 30px; color: rgb(255, 102, 102);">검색어</label>
+    <input type="text" class="search-word" style="border-radius: 5px; border: 0.5px solid; border-color: rgb(255, 102, 102); padding-left: 10px;">
+    <button class="search-button btn-basic" style="border: 0ch; margin-left: 30px; background-color: rgb(255, 102, 102);  box-shadow: none;">검색하기</button>
+</div>
+
+<div class="list box-1">
+    <div class="list-wrap">
+
+    </div>
+
+    <div class="search-wrap">
+       
+    </div>
+    
+</div>
+
+<div class="add-wrap">
+    <button type="submit" class="link-button btn-basic">등록하기</button>
+    <button class="edit-button btn-basic" style="display: none;">수정하기</button>
+    <button class="del-button btn-basic" style="display: none;">삭제하기</button>
+</div>
+
+  </div>
+
+
+  <script>  
+
+  
+    var 상품데이터 = [];
+    var sel_files = [];
+    var src = ""; // 이미지링크
+    var img_name = ""; // 이미지이름
+    var file_id = 0; //input file이 생성될 때의 data-num
+    var edit_img = "";
+
+    var is_edit = false;
+
+  
+  //수정하기
+  $('.edit-button').on('click',function(){
+
+
+
+    var _id = $('#id').val();
+    var 상품명 = $('#name').val();
+    var 가격 = $('#price').val();
+    var 분류 = $('#category option:selected').val();
+    var 재고 = $('#inven').val();
+
+    if(_id == ""){
+         alert("수정 아이템을 선택하세요");
+         return;
+    }
+    
+    $.ajax({
+            method: 'post',
+            url: '/edit',
+            data: { 
+                _id : _id ,
+                상품 : 상품명,
+                가격 : 가격,
+                분류 : 분류,
+                재고 : 재고,
+                이미지 : edit_img
+            }
+
+        }).done(function (res) {
+             alert('수정완료');
+             location.reload();
+        }).fail(function (err) {
+              alert(err);
+        });
+
+        $(".add-form").submit();
+  })
+
+  //삭제하기
+  $('.del-button').on('click',function(){
+ 
+    var del_item = $('#id').val();
+
+    if(del_item == ""){
+        alert('삭제 상품을 선택하세요');
+        return;
+    }
+
+    $.ajax({
+            method: 'delete',
+            url: '/edit',
+            data: { item_id : del_item },
+        }).done(function (res) {
+             if(res == 'success'){
+                 alert('삭제 완료');
+                 location.reload();
+             }
+        }).fail(function (err) {
+              alert(err);
+        });
+  })
+
+
+  $('.tab-link').on('click',function(){
+    var tab = $('.tab-link');
+    $(this).removeClass('disable');
+    tab.not($(this)).addClass('disable');
+    
+    if($(this).text() == '상품 추가'){
+        is_edit = false;
+
+       $('.list-wrap', '.add-button', 'link-button', '.img-add').show();
+       $('.img-edit','.edit-button','.del-button','.result-input').hide();
+      
+       $("#edit-file").val("");
+       $("#img-file").val("");
+       $('.img-wrap').children().remove();
+
+       $('.search-wrap').hide();
+       $('.search-wrap').children().remove();
+       $('.list-wrap').show();
+
+       $(".add-form").attr("action", "/add_img/item");
+       
+     
+    }else{
+       is_edit = true;
+ 
+       $('.list-wrap', '.add-button', 'link-button', '.img-add').hide();
+       $('.img-edit','.edit-button','.del-button','.result-input').show();
+     
+
+       $("#img-file").val("");
+       $("#edit-file").val("");
+       $('.img-wrap').children().remove();
+
+       $('.list-wrap').hide();
+       $('.list-wrap').children().remove();
+       $('.search-wrap').show();
+
+       $(".add-form").attr("action", "/edit_img/item");
+     
+    }
+  })
+
+
+  //상품 검색
+   
+    $('.search-button').on('click', function () {
+            $('.search-wrap').children().remove();
+
+            var word = $('.search-word').val();
+
+            $.ajax({
+                method: 'get',
+                url: '/edit/' + word,
+                success: function (res) {
+                    for (var i = 0; i < res.length; ++i) {
+
+        
+                    $('.search-wrap').append(
+                `<div class="list-box">
+
+                    <span class="list-id" style='display:none;'>${res[i]._id}</span>
+                    <span class="list-img" style='display:none;'>${res[i].이미지}</span>
+
+                   <img src = /public/image/item/${res[i].이미지} style = 'width:100px; height:100px; padding:10px;' />
+
+                   <label>상품 </label><span class="list-name">${res[i].상품}</span>
+                   <label>가격 </label><span class="list-price">${res[i].가격}</span>
+                   <label>분류 </label><span class="list-category">${res[i].분류}</span>
+                   <label>재고 </label><span class="list-inven">${res[i].재고}</span>
+                 
+                    </div>`
+                  
+                        )
+                    }
+
+                }
+
+            })
+
+        })
+
+     $(document).on('click', '.list-box', function () {
+
+
+         if (is_edit) {
+
+             $('#name').val(($(this).children('.list-name').text()));
+             $('#id').val(($(this).children('.list-id').text()));
+             $('#price').val(($(this).children('.list-price').text()));
+             $('#category').val(($(this).children('.list-category').text()));
+             $('#inven').val(($(this).children('.list-inven').text()));
+
+             $('.img-edit').hide();
+
+             var img_name = $(this).children('.list-img').text();
+             console.log(img_name);
+
+             edit_img = img_name;
+
+             $('.img-wrap').children().remove();
+
+             $('.img-wrap').append(
+                 `<div style="position:relative;">
+                        <img src='/public/image/item/${img_name}' style = 'width:300px; height:300px'; >
+                        <button type="button" class="edit-cancel">X</button>
+                        </div>`
+             );
+
+             $('.edit-cancel').on('click', function () {
+                 $(this).parent().remove();
+                 $('.img-edit').show();
+                
+             });
+         }
+
+     });
+
+    
+
+
+
+//추가하기 버튼을 누를때
+    $('.add-button').on('click',function(){
+
+     
+        var 상품명 = $('#name').val();
+        var 가격 = $('#price').val();
+        var 분류 = $('#category option:selected').val();
+        var 재고 = $('#inven').val();
+
+        if(상품명 == "" || 가격 == "" || 재고 == "" ){
+              console.log(img_name);
+              alert("추가하는 상품 정보를 기입해주세요");
+              return;
+        }
+
+        상품하나 = {상품명:상품명,가격:가격,분류:분류,재고:재고,파일:img_name}
+        
+        상품데이터.push(상품하나);
+
+        console.log(상품데이터);
+       
+       
+        $('.list-wrap').append(
+                `<div class="list-box">
+                   
+                    <img src = ${src} style = 'width:100px; height:100px; padding:10px;' />
+                    
+
+                  
+                    <span>상품명 : ${상품명} 가격 : ${가격} 분류 : ${분류} 재고 : ${재고}</span>
+                    
+                   
+                 
+                    <button type="button" class="cancel-button" data-num=${file_id}>X</button>
+                   
+                </div>`
+               
+        )
+
+        
+        $('.cancel-button').on('click',function(){
+            console.log($(this).data('num'));
+            $(this).parent().remove();
+            
+            $("input[name='imgfile[]']").eq([$(this).data('num')]).val('')
+        });
+
+       
+        $('.img-wrap').empty();
+        $('.img-add').css('display','');
+
+
+        $('#name').val("");
+        $('#price').val("");
+        $('#category').val("");
+        $('#inven').val("");
+
+        file_id++;
+
+        $('.button-wrap').append(`
+        <input type="file" id="img-file" name="imgfile[]" data-num = ${file_id} style="display: none;" >
+        `)
+       
+
+        
+    });
+
+ //+버튼 이미지 미리보기   
+    $('.img-add').on('click',function(){
+        $("input[name='imgfile[]']")[file_id].click();
+    });
+
+    $('.img-edit').on('click',function(){
+        $("#edit-file").click();
+    });
+
+ //상품 추가 이미지 
+    function readInputImg(e){
+    
+    sel_files = [];
+ 
+    
+    var files = e.target.files;
+    var fileArr = Array.prototype.slice.call(files);
+    var index = 0;
+   
+    
+    fileArr.forEach(function(f){
+    	if(!f.type.match("image/.*")){
+        	alert("이미지 확장자만 업로드 가능합니다.");
+            return;
+        };
+
+        if(files.length < 5){
+        	sel_files.push(f);
+            var reader = new FileReader();
+            reader.onload = function(e){
+                src = e.target.result;
+                img_name = f.name;
+                $('.img-add').css('display','none');
+                $('.img-wrap').append(
+                    `<div id=img_id_${index} style="position:relative;">
+                        <img src=${e.target.result} data-file=${f.name} />
+                        <button type="button" class="cancel-img" data-id = ${file_id}>X</button>
+                        </div>`
+                    );
+
+        $('.cancel-img').on('click',function(){
+            $(this).parent().remove();
+            $('.img-add').show();
+           
+        });
+                index++;
+            };
+            reader.readAsDataURL(f);
+           
+
+        }
+    })
+  
+}
+
+//상품 수정 이미지
+   function readEditImg(input){
+    $('.img-edit').hide();
+  
+    if(input.files[0].match("image/.*")){
+        	alert("이미지 확장자만 업로드 가능합니다.");
+            return;
+        };
+
+    if (input.files && input.files[0]) {
+    edit_img = input.files[0].name;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        $('.img-wrap').append(
+                `<div>
+                        <img src=${e.target.result} style = 'width:300px; height:300px'; >
+                        <button type="button" class="cancel-button">X</button>
+                        </div>`
+            );
+
+        $('.cancel-button').on('click',function(){
+        $(this).parent().remove();
+        $('.img-edit').show();
+        });
+      }
+      reader.readAsDataURL(input.files[0]);
+      console.log(edit_img);
+   }
+
+
+      
+
+   }
+
+//이미지 추가 버튼을 클릭하고 이미지를 지정했을때 
+
+$(document).on('change','#img-file', readInputImg);
+
+$(document).on('change','#edit-file', function(){
+    readEditImg(this);
+});
+
+
+
+
+
+
+
+
+//폼 밖에 버튼을 두기
+    $('.link-button').click(function (){
+        $.ajax({
+            method: 'post',
+            url: '/add_item',
+            data: { 상품 : 상품데이터 }
+
+        }).done(function (res) {
+             alert('전송완료');
+        }).fail(function (err) {
+              alert(err);
+        });
+
+
+       $('.add-form').submit();
+    })
+  </script>
+
+
+
+        
+</body>
+
+</html>

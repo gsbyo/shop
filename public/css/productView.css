@@ -1,0 +1,113 @@
+.wrap-container {
+    width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    justify-items: center;
+
+}
+
+.img-container{
+  width: 50%;
+  height: 600px;
+  padding: 20px;
+
+
+}
+
+.img-container img{
+    width: 100%;
+    height: 100%;
+
+}
+
+.info-container{
+width: 50%;
+height: 600px;
+padding: 20px;
+}
+
+
+
+.tap-container{
+width: 100%;
+list-style: none;
+padding-left: 0px;
+display: flex;
+justify-content: center;
+
+}
+
+.tap-container li{
+   background: rgb(255, 102, 102);
+   color: white;
+   width: 24%;
+   padding: 10px;
+   cursor:pointer;
+   font-size: 25px;
+   text-align: center;
+   
+}
+
+.tap-container li.current{
+    background: rgb(250, 145, 145);
+  
+}
+
+#buy-count{
+    color: rgb(255, 102, 102);
+    border-radius: 4px;
+    width: 70px;
+    border: 0;
+    border: 0.5px solid rgb(255, 102, 102);
+    padding-left: 10px;
+}
+
+.list-container{
+    width: 100%;
+    text-align: center;
+}
+.product-box{
+    height: 200px;
+    overflow: hidden;
+}
+
+.re-wrap{
+    margin-top: 50px;
+}
+
+
+#more-button{
+   background-color: rgb(255, 102, 102);
+   border: 0;
+   padding: 10px;
+   border-radius: 5px;
+   color: white;
+  
+}
+
+.re-img-box{
+    display: inline-block;
+    padding: 10px;
+}
+.re-img-box img{
+ width: 100px;
+ height: 100px;
+ 
+}
+
+.re-text-box p{
+    padding: 0;
+}
+
+
+.re-in{
+    text-align: left;
+    border-bottom: 1px solid rgb(255, 102, 102);
+}
+
+.re-in p{
+    font-size: 20px;
+    padding: 10px;
+}

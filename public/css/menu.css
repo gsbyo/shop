@@ -1,0 +1,129 @@
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+
+  
+body {
+    font-family: 'Bebas Neue', cursive !important;
+    font-family: 'Black Han Sans', sans-serif !important;
+}
+
+.basic-btn{
+    padding: 5px; 
+    margin-right: 10px; 
+    background-color: rgb(255,102,102) !important;
+    border: 0ch !important;
+}
+
+.member > a {
+    text-decoration:none !important;
+    color: rgb(255,102,102) !important;
+}
+
+ul {
+    list-style: none;
+}
+
+.top-menu{
+    width: 100%;
+    font:bold 16px "malgun gothic";
+    height:50px;
+    background-color:rgb(255,102,102);
+    color:white;
+    line-height: 50px; 
+    margin:0 auto;
+    text-align: center;
+    white-space:nowrap;
+    
+}
+
+
+.top-menu > ul > li {
+    width: 180px;
+    display: inline-block;
+    
+}
+
+.top-menu a {
+    text-decoration: none;
+    color: white;
+}
+
+
+.top-menu a:hover{
+    color: darkgrey;
+}
+
+.catecory{
+    display: block;
+    position: relative;
+    
+    
+}
+
+.catecory-box {
+    width: 250px;
+    position: absolute;
+    text-align: center;
+    z-index: 1;
+}
+.catecory-box > li{
+    width: 100%;
+    display: none;
+    border-top:0.2px solid white;
+    background:rgb(255,102,102);
+}
+
+.catecory:hover .catecory-box li{
+    display:block;
+}
+
+
+.logo{
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.member{
+  display: flex;
+  justify-content: end;
+}
+.user{
+    display: flex;
+    justify-content: end;
+}
+input{box-shadow: none !important;}
+
+input:focus {
+    outline: none;
+}
+
+.search-input{
+    position: relative;
+    
+}
+
+.search-input i{
+    position: absolute;
+    top:17px;
+    left: 10px;
+    color: gray;
+}
+
+  
+.search-text{
+    border-radius: 10px;
+    height: 30px; 
+    border: 0.5px solid white;
+    line-height: 30px;
+    padding-left: 35px;
+    color: rgb(255,102,102);
+}
+
+
+  
+  

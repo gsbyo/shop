@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <link rel="stylesheet" href="/public/css/comleteView.css">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+</head>
+
+<body>
+    <div class="box">
+        <div>
+    <p>주문이 완료 되었습니다</p>
+    <button class="home-button">홈으로 돌아가기</button>
+    </div>
+   </div>
+</body>
+
+<script>
+    $('.home-button').on('click', function(){
+        $(location).attr('href', '/home');
+    })
+</script>
+
+</html>
+
+
+

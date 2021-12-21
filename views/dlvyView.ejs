@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+
+  
+  <title>Gsb 쇼핑몰</title>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <link rel="stylesheet" href="/public/css/dlvyView.css" type="text/css">
+
+  
+</head>
+<body style="background-color:#f7f9fc;">
+    <div class="order-wrap">
+        <h2>운송장 입력 목록</h2>
+        <% for(var i=0; i<order.length; ++i){ %>
+         <div class="order-box">
+             <% if(order[i].count.length <= 1){ %>    
+              <p style="padding: 20px;">주문번호 <%= order[i]._id %></p>
+              <div class="in-box">
+                <p><%= order[i].item_name %></p>
+                <p> <%= order[i].item_price %>원</p>
+                <p><%= order[i].count %>개</p>
+             </div>
+            <% }else{ %>
+            <% for(var j=0; j < order[i].count.length; ++j){ %>
+           <div class="in-box">
+            <p><%= order[i].item_name[j] %> </p>
+            <p> <%= order[i].item_price[j] %>원 </p>
+            <p><%= order[i].count[j] %>개</p>
+          </div>
+
+            <% }} %>
+            <% if(order[i].status == 'ok'){ %>
+                <div class="dlvy-box" style="width: 100%; margin: 0 auto; padding: 20px;">
+                 <label>운송장 번호</label><input type="number" class = "dlvy-num"><button class="input-button">확인</button>
+                 <p style="display: none;"><%= order[i]._id %></p>
+                </div>
+             <% } %>
+             
+
+         </div>
+        
+            <% } %>
+     </div>
+
+    
+
+
+  <script>
+      $('.input-button').on('click',function(){
+          
+         
+          var dlvy_num = $(this).prev().val();
+          var order_num = $(this).next().text();
+        
+         if(dlvy_num == ""){
+           alert('운송장 번호를 입력해주세요');
+           return;
+           //택배회사에 따라서 운송장 자리수 체크 필요 
+         }         
+
+        $.ajax({
+            method : 'post',
+            url : '/dlvyment',
+            data: {
+                dlvy_num : dlvy_num,
+                order_num : order_num
+            }
+        }).done(function (결과) {
+            location.reload();
+        }).fail(function (에러) {
+              alert(에러);
+        });
+      });
+  </script>
+
+
+</body>
+</html>

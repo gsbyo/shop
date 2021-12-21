@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Gsb 쇼핑몰</title>
+
+  <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/public/css/trackView.css" type="text/css">
+
+
+</head>
+<body>
+
+   <div>
+    <table class="track-tb">
+      <% if(res.data.status != false ){ %>
+       <tr>
+         <td colspan="3" style="background-color: rgb(255,102,102);">배송추적</td>
+       </tr>
+       <% for(var i = 0; i < res.data.trackingDetails.length; ++i){ %>
+         <tr>
+           <td><%= res.data.trackingDetails[i].timeString %></td>
+           <td><%= res.data.trackingDetails[i].kind %></td>
+           <td><%= res.data.trackingDetails[i].where %></td>
+         </tr>
+         <%} %>
+         <% }else{%>
+           <tr>
+             <td style="background-color: rgb(255,102,102); width:400px">배송추적</td>
+         </tr>
+         <tr>
+           <td>운송장 번호를 다시 확인하세요. </td>
+         </tr>
+         <%}%>
+           
+       </table>
+   </div>
+
+   <script>
+   
+   </script>
+
+
+</body>
+</html>
+

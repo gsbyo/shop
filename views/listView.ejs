@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    
+    <link rel="stylesheet" href="/public/css/menu.css" type="text/css">
+    <link rel="stylesheet" href="/public/css/listView.css" type="text/css">
+
+
+</head>
+<%- include('html/menu.html') %>
+
+
+<body style="background-color:#f7f9fc;">
+    <p style="text-align: center; margin-top: 20px; font-size: 100px; color:rgb(255, 102, 102);">상품 목록</p>
+    
+ <div class="new-container">
+     <div class="new-list">
+    <% for(let i = 0; i < posts.length; ++i){ %>
+         <div class="list-box" onclick="location.href='/items/detail/item?itemid=<%= posts[i]._id %>';">
+             <div class="img-box">
+                <img src = "/public/image/item/<%= posts[i].이미지 %>">
+             </div>
+             <div class="info-box" >
+                <p><%= posts[i].상품 %> </p>
+                <p><%= posts[i].가격 %></p>
+             </div>
+         </div>
+    <%}%>
+    <div class="page-box">
+
+    </div>
+
+
+     </div>
+
+ </div>
+
+
+
+
+
+
+<script>
+    var 게시글총개수 = '<%= totalcount %>'  
+    var cur_page = 1; // 현재 페이지 
+    var view_num = 8; // 페이지 안에 보여줄 글의 개수
+    var page_num = 5; // 한번에 페이지를 몇개 보여줄 것인지
+
+
+    var page_limit = Math.ceil(게시글총개수 / view_num); // 총 페이지 개수
+
+    var path = "";   
+    var link_num = $(location).attr('pathname').split('/')[4] //현재 페이지
+
+    if(link_num > 1){  
+        path = $(location).attr('pathname').split('/')[3];
+    }else{
+        path = $(location).attr('search').split('=')[1];
+    }
+   
+      
+    for (let i = 1; i <= page_limit; ++i){
+        if(i == 1){
+            $('.page-box').append(`<a class='active-link' style="margin-right:5px" href="/items/list?way=${path}">${i}</a>`);
+        }else{
+           
+            $('.page-box').append(`<a style="margin-right:5px" href="/items/list/${path}/${i}">${i}</a>`);
+        }
+    
+    }
+     
+  
+
+    if(link_num > 1){ 
+    $('.page-box a').removeClass('active-link');
+    $('.page-box a').eq(link_num - 1).addClass('active-link');
+    }
+
+   
+
+    //a링크를 클릭했을때 cur_page가 a링크의 숫자로 바꿔야함.
+    
+
+   
+</script>
+
+</body>
+
+</html>
+
+

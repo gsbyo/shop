@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Gsb 쇼핑몰</title>
+  <!-- JQuery-->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+
+  <link rel="stylesheet" href="/public/css/menu.css" type="text/css">
+  <link rel="stylesheet" href="/public/css/productView.css" type="text/css">
+
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Black+Han+Sans&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Bebas Neue', cursive;
+      font-family: 'Black Han Sans', sans-serif;
+    }
+
+    p {
+      font-size: 50px;
+    }
+  </style>
+</head>
+<body style="background-color:#f7f9fc;">
+
+ <%- include('html/menu.html') %>
+
+
+ <div class="wrap-container">
+     <div class="img-container">
+        <img src = "/public/image/item/<%= post.이미지 %>">
+     </div>
+     <div class="info-container">
+       <div style="color: rgb(255,102,102);">
+        <a>상품명 : <%= post.상품 %></a>
+        <a>가격 : <%= post.가격 %></a>
+       </div>
+       <div style="color: rgb(255,102,102); margin-top: 20px;">
+        <label>구매 수량</label>
+        <input type="number" id="buy-count" name="buy-count">
+        <div style="margin-top: 20px;">
+        <button class="buy-button btn btn-primary" style="border:0px; background-color: rgb(255,102,102);">구매하기</button>
+        <button class="basket-button btn btn-primary" style="border:0px; background-color: rgb(255,102,102);">장바구니</button>
+      </div>
+       </div>
+
+       <div class="lo">
+
+       </div>
+ </div>
+ </div>
+
+<div style="margin-bottom:20px ;"></div>
+
+
+<div class="wrap-container">
+ <ul class="tap-container">
+     <li class="tab-link current">상품 설명</li>
+     <li class="tab-link">상품평</li>
+     <li class="tab-link">상품문의</li>
+     <li class="tab-link">배송/반품/교환 안내</li>
+ </ul>
+ </div>
+
+
+
+
+ <div class="wrap-container">
+   <div class="list-container">
+  <div class="product-box">
+  </div>
+  <div style="margin-top: 10px; text-align: center;">
+  <button id="more-button">상품정보 더보기</button> 
+  </div>
+  <div class="re-wrap">
+    <h3 style="color: white; width: 100%; background-color: rgb(255,102,102); padding: 10px; border-radius: 5px;">상품평</h3>
+    <div class="re-out">
+    </div>
+
+
+
+    <div class="re-page-box">
+    </div>
+  
+  </div>
+  <div class="re-page">
+
+  </div>
+  <!-- <div class="index">
+    <p>질문 / 답변 게시판 </p>
+  </div>
+  <div class="index">
+    <p>간단한 안내 / 주의 사항</p>
+  </div> -->
+</div>
+ </div>
+
+
+
+
+<script>
+  //탭 목록 활성화
+  $('.tap-container li').on('click',function(){
+    $('.tap-container li').removeClass('current');
+
+    $(this).addClass('current')
+  })
+
+  $('#more-button').on('click',function(){
+    if($('#more-button').text() == '상품정보 더보기'){
+    $('.product-box').css('height','auto');
+    $('#more-button').text('상품정보 접기')
+    }else{
+      $('.product-box').css('height','200');
+    $('#more-button').text('상품정보 더보기')
+    }
+  
+  })
+  
+
+  const param = '<%= post._id %>'; 
+  console.log(param);
+
+
+
+
+
+  $.ajax({
+        url:'/review/'+param,
+        method : 'GET',
+        success :  function(res){
+          console.log(res.totalcount);
+          if (res.review.length){
+            for (var i = 0; i < res.review.length; ++i) {
+              $('.re-out').append(
+                `<div class="re-in"> <p>${res.review[i].사용자}</p></div>`
+              )
+
+              for (var j = 0; j < res.review[i].이미지.length; ++j) {
+                $('.re-in').last().append(
+                  `<div class="re-img-box"><img src = '/public/image/test/${res.review[i].이미지[j]}'</div>`
+                )
+              }
+              $('.re-in').last().append(
+                `<div class="re-text-box"> <p> ${res.review[i].제목} </p> <p> ${res.review[i].내용} </p></div>`
+              )
+            }
+          }else{
+            $('.re-out').append(`<p style='padding:10px; color:rgb(255,102,102);'>리뷰가 존재하지 않습니다.</p>`)
+          }
+
+        }
+
+      
+  })	
+
+  
+  $('.buy-button').on('click',function(){
+      var 사용자 = '<%= 사용자 %>';
+      var count = $('#buy-count').val();
+      var id = '<%= post._id %>'
+      var order_num = id + new Date().getTime();
+
+      if(($('#buy-count').val()) == '') return alert('구매 수량을 입력하세요');
+
+      //결제전 주문정보를 저장
+      $.ajax({
+        method : 'post',
+        url: '/direct/payment',
+            data: { 
+                order_num : order_num,
+                id : id,
+                count : count
+              }
+        }).done(function (res) {
+          
+        }).fail(function (err) {
+              alert(err);
+        });
+
+      $(location).attr('href','/direct/pay/'+order_num+'?item='+id+'&a='+count);
+      
+
+     
+  });
+
+  $('.basket-button').on('click', function () {
+
+
+    var 사용자 = '<%= 사용자 %>';
+    var 상품번호 = searchParam('itemid');
+    var 구매수량 = $('#buy-count').val();
+
+    var 장바구니 = { num: 상품번호, amount: 구매수량 }
+
+    if (($('#buy-count').val()) == '') return alert('구매 수량을 입력하세요');
+
+
+    $.ajax({
+      method: 'post',
+      url: '/cart/add',
+      data: { 'data': 장바구니 }
+    }).done(function (res) {
+      if (res == 'overlap') {
+        alert('장바구니에 동일한 상품이 있습니다.')
+      }
+
+      if (res == 'success') {
+        var result = confirm('장바구니로 이동하시겠습니까 ?');
+        if (result) {
+          $(location).attr('href', '/cart/view');
+        } else {
+          $('#buy-count').val('');
+        }
+
+
+      }
+    }).fail(function (err) {
+      alert(err);
+    });
+
+    console.log(result);
+
+
+
+  
+
+  });
+
+
+     
+  function searchParam(key) {
+  return new URLSearchParams(location.search).get(key);
+  };
+
+  
+  //item_id로 불러온 하나의 데이터를 가지고 상품명 가격 등등을 기입해서 표시하면댐.
+  //구입할때도 이 데이터를 넘기거나 남겨서 장바구니나 결제 시스템으로 넘어감.
+
+
+</script>
+  
+
+</body>
+</html>

@@ -1,0 +1,144 @@
+
+ul{
+    list-style:none !important;
+    padding-left: 0px !important;
+}
+
+
+.container{
+    width: 1200px;
+    display: flex;
+    flex-wrap: wrap;
+    
+}
+
+.header{
+    width: 100%;
+    height: 100px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(255,200,200);
+}
+
+
+.list-box{
+  width: 20%;
+}
+
+.list-box li {
+    width: 80%;
+    color: rgb(255,200,200);
+    border: 1px solid rgb(255,200,200);
+    margin-bottom: 5px;
+    border-radius: 4px;
+    font-size: 20px;
+    text-align: center;
+    padding: 10px;
+   
+}
+
+.list-box .focus {
+   color:rgb(255,102,102)
+}
+
+.bg-container{
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  
+}
+
+.order-wrap{
+  width: 80%;
+  height: auto;
+  text-align: center;
+ 
+}
+
+
+.order-box{
+  width: 100%;
+  display: flex;
+  border-radius: 4px;
+  box-shadow: 1px 1px 2px 1px rgb(255,200,200);
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  color: rgb(255,120,120);
+}
+
+.order-box img{
+  width: 150px;
+  
+}
+
+.order-box p{
+  margin: 0 auto;
+  font-size: 20px;
+  padding: 10px;
+}
+
+.order-item{
+  width: 80%;
+  border-right: 1px solid rgb(255,200,200);
+  text-align: left;
+}
+
+
+.track-box{
+  width: 20%;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.out-box {
+  width: 100%;
+
+
+}
+
+
+.in-box {
+  padding: 10px;
+  width: 80%;
+  display: flex;
+  align-items: center;
+  
+ 
+}
+
+.in-box p {
+  width: 80%;
+  margin-left: 20px;
+}
+
+.in-box img {
+  width: 20%;
+  height: 100px;
+}
+
+.totalpay{
+  width: 20%;
+  height: 100%;
+  border: 1px solid black;
+  
+}
+
+.track-button{
+  border: 0;
+  padding: 10px;
+  background-color: rgb(255,102,102);
+  border-radius: 5px;
+  color: white;
+}
+
+
