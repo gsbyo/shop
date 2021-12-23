@@ -14,9 +14,6 @@ th, td {
     text-align: center;
 }
 
-.re-table{
-    
-}
 
 textarea{
     resize: none;
@@ -41,10 +38,6 @@ textarea{
     background-color: rgb(255,200,200);
 }
 
-.img-wrap{
-
-}
-
 
 .img-box{
     position: relative;
@@ -61,9 +54,6 @@ textarea{
   
 }
 
-#title{
-   
-}
 
 #title:focus{ 
   outline: 0ch;
