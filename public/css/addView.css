@@ -43,7 +43,9 @@ li {
 .tab-container .disable{
     background: rgb(250, 145, 145);  
 }
-
+.container{
+    width: 1200px;
+}
 .input-item input{
     color: rgb(255, 102, 102);
     padding-left: 10px;
@@ -110,9 +112,7 @@ input{
     border: 1px solid rgb(255, 145, 145);
     border-radius: 3px;
 }
-input:focus{
-    border:0;
-}
+
 
 select{
     color: rgb(255, 102, 102);
@@ -234,12 +234,11 @@ option{
     color: white;
     border: 0;
     border-radius: 4px;
-    padding: 10px;
     position: absolute;
-    top:75%;
-    right: 10%;
-
-
+    top: 75%;
+    right: 30%;
+   
+    
 }
 
 #category{
@@ -248,16 +247,22 @@ option{
 
 }
 
-.edit-cancel{
+.cancel-editImg{
     position: absolute;
-    top : 77%;
+    top : 75%;
     right: 30%;
     border: 0;
     border-radius: 4px;
     background-color: rgb(250, 145, 145);
     color: white;
 
-    
+}
+
+.edit-cancel{
+    background-color: rgb(250, 145, 145);
+    color: white;
+    border: 0;
+    border-radius: 4px;
 }
 
 

@@ -51,7 +51,7 @@
                         </div>
                     </div>
                     <form class="re-form" id='re-form' method="post" enctype='multipart/form-data'
-                        action="/review/test">
+                        action="/review_add/test/review">
                         <div class="img-input">
                             <input type="file" id="file" name="file[]" data-num="0" style="display: none;">
                     </form>
@@ -68,9 +68,8 @@
     <script>
         var file_id = 0;
         var file_count = 0;
-        var sel_files = [];
         var is_selected = false;
-
+        var img_files = [];
 
         review_get();
 
@@ -98,61 +97,56 @@
             $(this).addClass('selected');
             $('.scroll-box').hide();
             is_selected = false;
-            review_get();
+            review_get ();
         });
         
 
-      
-
-
-        
+    
 
         $('.add-img').on('click', function () {
             $("input[name='file[]']")[file_id].click();
         });
 
 
-        //파일을 가져오는 과정
-        function readInputFile(e) {
-
-            var files = e.target.files;
-            var fileArr = Array.prototype.slice.call(files);
-
-
-
-            fileArr.forEach(function (f) {
-                if (!f.type.match("image/.*")) {
-                    alert("이미지 확장자만 업로드 가능합니다.");
-                    return;
-                };
-                if (file_count < 4) {
-                    sel_files.push(f.name);
+        function readInputFile(input) {
+            if (!input.files[0].type.match('image.*')) {
+                alert("이미지만 등록가능 합니다.")
+                return;
+            }
+                
+                if (input.files && input.files[0]) {
                     var reader = new FileReader();
                     reader.onload = function (e) {
-                        src = e.target.result;
-                        img_name = f.name;
-                        $('.img-wrap').css('display', 'inline-block');
+                        img_files.push(input.files[0].name);
                         $('.img-wrap').prepend(
                             `<div class="img-box">
-                            <img src=${e.target.result} data-file=${f.name} />
+                                <img src=${e.target.result} />
                             <button type="button" class="cancel-button" data-id = ${file_id}>X</button>
                             </div>`
                         );
 
-                        $('.cancel-button').on('click', function () {
+                        $('.cancel-button').off().on('click', function () {
+                           
                             $(this).parent().remove();
 
                             $("input[name='file[]']").eq([$(this).data('id')]).val('');
-                            sel_files[$(this).data('id')] = '';
-                            file_count--;
+                            
+                            
 
                             if (file_count < 4) {
                                 $('.add-img').css('display', '');
                             }
+
+                            file_count--;
+
+                            var del_file = parseInt($(this).data('id')) % 4;
+                            console.log(del_file);
+
                         });
 
                         ++file_id;
                         ++file_count;
+
 
                         $('.img-input').append(`
                                <input type="file" id="file" name="file[]" data-num=${file_id} style="display: none;">
@@ -162,18 +156,22 @@
                             $('.add-img').css('display', 'none');
                         }
 
+
+                      
+                    }
+                   
+                    reader.readAsDataURL(input.files[0]);
                     };
 
-                    reader.readAsDataURL(f);
+                  
                 }
 
+     
 
 
-
-            })
-        }
-
-        $(document).on('change', '#file', readInputFile);
+        $(document).on('change', '#file',function(){
+            readInputFile(this);
+        });
 
 
         $('.submit-review').on('click', function () {
@@ -181,24 +179,14 @@
             var content = $('#content').val();
             var review_id = $('.selected').data('num');
        
-            
-
-            //배열의 null 처리
-            sel_files  = sel_files.filter(function(item) {
-            return item !== null && item !== undefined && item !== '';
-            });
-
-            console.log(sel_files);
-
-            
-
+        
 
             $.ajax({
                 method: 'post',
                 url: '/review',
                 data: {
                     item_id : review_id,
-                    img : sel_files,
+                    img : img_files,
                     title: title,
                     content: content
                 }

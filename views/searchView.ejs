@@ -27,7 +27,7 @@
         <p style="text-align: center; margin-top: 20px; font-size: 100px; color:rgb(255, 102, 102);">상품 검색</p>
         <div class="result-input">
             <label style="margin-right: 30px; color: rgb(255, 102, 102);">검색어</label>
-            <input type="text" id="search-text"
+            <input type="text" id="search-text" onKeypress="javascript:if(event.keyCode==13) {search()}"
                 style="border-radius: 5px; border: 0.5px solid; border-color: rgb(255, 102, 102); padding-left: 10px;">
             <button class="basic-button search-button">검색하기</button>
         </div>
@@ -36,17 +36,17 @@
             <div class="result-none">
                 <a>검색된 상품이 없습니다.</a>
             </div>
-            <% for(var i=0; i < search-res.length; ++i){ %>
-                <div class="list-box" onclick="location.href='/items/detail/item?itemid=<%= 검색결과[i]._id %>'">
+            <% for(var i=0; i < search_res.length; ++i){ %>
+                <div class="list-box" onclick="location.href='/items/detail/item?itemid=<%= search_res[i]._id %>'">
                     <div class="img-box">
-                        <img src="/public/image/item/<%= search-res[i].이미지 %>">
+                        <img src="/public/image/main/item/<%= search_res[i].이미지 %>">
                     </div>
                     <div class="text-box">
                         <a>
-                            <%= search-res[i].상품 %>
+                            <%= search_res[i].상품 %>
                         </a>
                         <a>
-                            <%= search-res[i].가격 %>
+                            <%= search_res[i].가격 %>
                         </a>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
         </div>
 
         <script>
-            var result = '<%= search-res.length %>'
+            var result = '<%= search_res.length %>'
 
             if (result > 0) { // 검색결과가 있으면
                 $('.result-none').hide();
@@ -69,13 +69,17 @@
 
 
             $('.search-button').on('click',function(){
+               search();
+            });
+
+            function search(){
                 var value = $('#search-text').val();
                 if (value == "") {
                     alert('검색어를 입력해주세요');
                 } else {
                     $(location).attr('href', '/search?value=' + value);
                 }
-            });
+            }
         </script>
 
 </body>

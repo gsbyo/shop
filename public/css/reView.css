@@ -61,6 +61,20 @@ textarea{
   
 }
 
+#title{
+   
+}
+
+#title:focus{ 
+  outline: 0ch;
+}
+
+#content{
+    font-size: 15px;
+    padding:10px;
+    
+}
+
 
 
 .img-box img{

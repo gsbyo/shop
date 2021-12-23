@@ -15,29 +15,38 @@
     <div class="order-wrap">
         <h2>운송장 입력 목록</h2>
         <% for(var i=0; i<order.length; ++i){ %>
+          <p style="padding: 20px;">주문번호 <%= order[i]._id %></p>
          <div class="order-box">
              <% if(order[i].count.length <= 1){ %>    
-              <p style="padding: 20px;">주문번호 <%= order[i]._id %></p>
               <div class="in-box">
+                <div style="width: 60%; display: flex;">
                 <p><%= order[i].item_name %></p>
                 <p> <%= order[i].item_price %>원</p>
                 <p><%= order[i].count %>개</p>
+              </div>
+              <div class="dlvy-box" style="width:40%">
+              <label>운송장 번호</label><input type="number" class = "dlvy-num"><button class="input-button">확인</button>
+              <p style="display: none;"><%= order[i]._id %></p>
              </div>
+            </div>
             <% }else{ %>
-            <% for(var j=0; j < order[i].count.length; ++j){ %>
            <div class="in-box">
+            <% for(var j=0; j < order[i].count.length; ++j){ %>
+             <div style="width: 60%; display: flex;">
             <p><%= order[i].item_name[j] %> </p>
-            <p> <%= order[i].item_price[j] %>원 </p>
+            <p><%= order[i].item_price[j] %>원 </p>
             <p><%= order[i].count[j] %>개</p>
           </div>
-
-            <% }} %>
-            <% if(order[i].status == 'ok'){ %>
-                <div class="dlvy-box" style="width: 100%; margin: 0 auto; padding: 20px;">
-                 <label>운송장 번호</label><input type="number" class = "dlvy-num"><button class="input-button">확인</button>
-                 <p style="display: none;"><%= order[i]._id %></p>
-                </div>
-             <% } %>
+          <% } %>
+          <div class="dlvy-box" style="width:40%">
+            <label>운송장 번호</label><input type="number" class = "dlvy-num"><button class="input-button">확인</button>
+            <p style="display: none;"><%= order[i]._id %></p>
+          </div>
+           </div>
+            <% } %>
+          
+               
+           
              
 
          </div>

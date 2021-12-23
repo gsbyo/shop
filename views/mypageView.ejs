@@ -10,7 +10,7 @@
 
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
-    <%- include('html/cofig.html') %>
+
     
 
 </head>
@@ -56,7 +56,7 @@
              <% if(order[i].count.length <= 1){ %>    
             <div class="out-box">
                 <div class="in-box">
-                <img src="/public/image/item/logo2.JPG">
+                <img src="/public/image/main/item/<%= item[i].이미지 %>">
                 <p><%= order[i].item_name %> <%= order[i].count %>개 <%= order[i].item_price %>원 </p>
             </div>
              </div>
@@ -64,7 +64,7 @@
            <div class="out-box">
             <% for(var j=0; j < order[i].count.length; ++j){ %>
             <div class="in-box">
-            <img src="/public/image/item/logo2.JPG">
+            <img src="/public/image/main/item/<%= item[j].이미지 %>">
             <p><%= order[i].item_name[j] %> <%= order[i].count[j] %>개 <%= order[i].item_price[j] %>원 </p>
              </div>
             <% } %>

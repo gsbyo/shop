@@ -3,7 +3,6 @@ const axios = require('axios');
 const ajax = require('ajax');
 const app = express();
 
-var http = require('http');
 
 const helmet = require("helmet");
 
@@ -32,7 +31,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 
 app.use(session({
-  secret : 'secretcode', //이건 hash key ?? 확인해보자.
+  secret : 'secretcode', 
   resave : true, 
   saveUninitialized: false,
   cookie: {
@@ -47,7 +46,6 @@ passport.use(new LocalStrategy({
   session: true,
   passReqToCallback: false,
 }, function (input_id, input_pw, done) {
-  //console.log(입력한아이디, 입력한비번);
   db.collection('login').findOne({ id: input_id }, function (err, res) {
     if (err) return done(err)
 
@@ -101,7 +99,9 @@ var storage = multer.diskStorage({
 
   destination : function(req, file, cb){
     var dir = req.params.path;
-    cb(null, './public/image/'+dir);
+    var dir2 = req.params.path2;
+
+    cb(null, './public/image/'+dir+'/'+dir2);
   },
   filename : function(req, file, cb){
     cb(null, file.originalname )
@@ -168,7 +168,6 @@ app.get('/logout', function (req, res) {
 app.get('/home', function (req, res) {
   db.collection('item').find().limit(4).toArray(function (err, db_res) {
       if(req.user){
-        console.log(req.user.id);
         res.render('homeView',{ posts : db_res, 사용자 : req.user.id });
       }
       else{
@@ -185,9 +184,10 @@ app.get('/items/list', function (req, res) {
   if(req.query.way == 'new'){
     db.collection('item').count(function (err, db_res) {
       toltalcount = db_res;
-      db.collection('item').find().sort({ '날짜' : 1 }).limit(view_count).toArray(
+      db.collection('item').find().sort({ _id : 1 }).limit(view_count).toArray(
         function (err, db_res2) {
-        console.log(db_res2);
+      
+          
 
         if(req.user){
           res.render('listView',{ posts: db_res2 , totalcount : toltalcount, 사용자 : req.user.id});
@@ -200,7 +200,7 @@ app.get('/items/list', function (req, res) {
 
     db.collection('item').count(function (err, db_res) {
       toltalcount = db_res;
-      db.collection('item').find().sort({'날짜' : -1}).limit(view_count).toArray(
+      db.collection('item').find().sort({_id : -1}).limit(view_count).toArray(
         function (err, db_res2) {
 
         if(req.user){
@@ -221,7 +221,7 @@ app.get('/items/list/new/:id', function (req, res) {
 
   db.collection('item').count(function (err, db_res) {
     totalcount  = db_res;
-    db.collection('item').find().sort({'날짜' : 1}).limit(view_count).skip(view_count * (req.params.id - 1)).toArray(
+    db.collection('item').find().sort({_id : 1}).limit(view_count).skip(view_count * (req.params.id - 1)).toArray(
       function (err, db_res2) {
       if(req.user){
         res.render('listView',{ posts: db_res2, totalcount : totalcount , 사용자 : req.user.id });
@@ -237,7 +237,7 @@ app.get('/items/list/best/:id', function (req, res) {
   var view_count = 8;
   db.collection('item').count(function (err, db_res) {
     totalcount = db_res;
-    db.collection('item').find().sort({'날짜' : -1}).limit(view_count).skip(view_count * (req.params.id - 1)).toArray(
+    db.collection('item').find().sort({_id : -1}).limit(view_count).skip(view_count * (req.params.id - 1)).toArray(
       function (err, db_res2) {
       
       if(req.user){
@@ -252,7 +252,6 @@ app.get('/items/list/best/:id', function (req, res) {
 
 //상품 구매페이지
 app.get('/items/detail/:id', function (req, res) {
-  console.log(req.query);
   db.collection('item').findOne({ _id : parseInt(req.query.itemid)},function(err, db_res){
         
     if(req.user){
@@ -275,7 +274,7 @@ app.post('/new', function (req, res) {
   res.send("성공");
 });
 
-app.post('/add_img/:path', upload.array('imgfile[]'), function (req, res) {
+app.post('/add_img/:path/:path2', upload.array('imgfile[]'), function (req, res) {
    res.redirect('/new')
 });
 
@@ -285,8 +284,7 @@ app.post('/add_item', function (req, res) {
     function (err, db_res) {
   
       var item_id = db_res.item_id;
-      console.log(item_id);
-
+      
       for (var i = 0; i < req.body.상품.length; ++i) {
         db.collection('item').insertOne(
           {
@@ -337,14 +335,14 @@ app.post('/direct/payment', login_check , function(req, res){
 
 
 //결제페이지
-app.get('/direct/pay/:id',function(req, res){
+app.get('/direct/pay/:id',login_check, function(req, res){
   //바로구매버튼
   var queryData = url.parse(req.url, true).query;
   var totalpay = 0;
 
   db.collection('item').find({_id : parseInt(queryData.item) }).toArray(function(err,db_res){
       totalpay = parseInt(db_res[0].가격) * parseInt(queryData.a);
-      console.log(totalpay);
+   
       res.render('payView', {items : db_res , count : queryData.a, totalpay : totalpay});
   });
 });
@@ -358,7 +356,7 @@ app.get('/cart/view', login_check, function(req, res){
         data.push(parseInt(db_res[i].item_id));  // 유저가 구입한 상품의 _id를 추출
     }
     db.collection('item').find( { _id : { $in : data } }).toArray(function(err,db_res2){
-      console.log(db_res2);
+     
       res.render('cartView', { basket: db_res, posts : db_res2 , 사용자: req.user });
     })
 })
@@ -367,10 +365,9 @@ app.get('/cart/view', login_check, function(req, res){
 
 
 //장바구니 상품추가
-app.post('/cart/add', function (req, res) {
+app.post('/cart/add', login_check, function (req, res) {
   db.collection('cart').findOne({ item_id : req.body.data.num, user : req.user.id }, function(err, db_res){
      if(db_res == null){
-        // console.log(db_res);
  
      db.collection('cart').insertOne(
         {
@@ -443,7 +440,7 @@ app.get('/cart/pay/:id',login_check, function(req, res){
 });
 
 //장바구니 목록삭제
-app.delete('/cart/del', function (req, res) {
+app.delete('/cart/del', login_check, function (req, res) {
   console.log(req.body.del_id);
    db.collection('cart').deleteOne({ item_id: req.body.del_id, user: req.user.id }, function (err, db_res) {
      
@@ -551,9 +548,8 @@ app.get('/search/',function(req, res){
 
 })
 
-app.get('/review',function(req, res){
+app.get('/review',login_check, function(req, res){
   db.collection('item').find().limit(4).toArray(function(err,db_res){
-    console.log(db_res);
     res.render('reView',{item : db_res});
 
   })
@@ -561,7 +557,7 @@ app.get('/review',function(req, res){
  
 })
 
-app.get('/review/:id',function(req, res){
+app.get('/review/:id/',function(req, res){
   db.collection('review').find({ item_id : req.params.id }).count(function(err,db_res){
   db.collection('review').find({ item_id : req.params.id }).toArray(function(err,db_res2){
     res.send({totalcount : db_res, review : db_res2});       
@@ -572,8 +568,6 @@ app.get('/review/:id',function(req, res){
 
 //db review data insert 
 app.post('/review', login_check, function (req, res) {
-
-  console.log(req.body)
 
   db.collection('review_count').findOne({ name: '리뷰갯수' },
     function (err, db_res) {
@@ -603,13 +597,13 @@ app.post('/review', login_check, function (req, res) {
 
 
 //img path insert
-app.post('/review/:path', upload.array('file[]'), function (req, res) {
+app.post('/review_add/:path/:path2', login_check, upload.array('file[]'), function (req, res) {
   res.redirect('/review');
 });
 
 
 
-app.get('/edit/:word',function(req, res){
+app.get('/edit/:word',login_check, function(req, res){
   db.collection('item').find({ 상품 : { $regex : req.params.word } }).toArray(function(err,db_res){
     res.send(db_res);       
   })
@@ -618,7 +612,6 @@ app.get('/edit/:word',function(req, res){
 
 
 app.post('/edit',function(req,res){
-  console.log(req.body);
   db.collection('item').updateOne({ _id : parseInt(req.body._id) },
    { $set: { 
     상품 : req.body.상품 , 
@@ -628,13 +621,12 @@ app.post('/edit',function(req,res){
     이미지 : req.body.이미지 
   } 
 }, function(err,db_res){
-    console.log(db_res);
     res.send(db_res);       
   });
 });
 
 
-app.post('/edit_img/:path', upload.single('editfile'), function (req, res) {
+app.post('/edit_img/:path/:path2', upload.single('editfile'), function (req, res) {
   res.redirect('/new')
 });
 
@@ -656,13 +648,26 @@ app.get('/mypage/order',login_check, function(req, res){
   //여기서 order에서 staus가 ok, ready인 부분을 가져옴.
 
 db.collection('order').find( {status : { $in : ['ok','dlvy_ing']  }, user : req.user.id } ).toArray(function(err,db_res){
-     res.render('mypageView',{ order : db_res, 사용자 : req.user.id});
+  var item_id = [];
+
+  db_res.forEach(element => {
+     item_id.push(element.item_id);
+  });
+
+   db.collection('item').find({ _id : { $in : item_id }},{projection:{ _id: 0, '이미지' : 1 }}).toArray(function(err, db_res2){
+    res.render('mypageView',{ order : db_res, item : db_res2, 사용자 : req.user.id});
+
+   });
+ 
+
+  
+  
 });
 
  
 });
 
-app.get('/dlvyment',function(req, res){
+app.get('/dlvyment',login_check, function(req, res){
   db.collection('order').find({ status : 'ok'}).toArray(function(err,db_res){
     res.render('dlvyView', { order : db_res});
   })
@@ -671,7 +676,7 @@ app.get('/dlvyment',function(req, res){
 
  //여기서는 운송장이 기입이 안되있지만 결제가 된 데이터를 가져와서
   //입력을 해서 update시킴.
-app.post('/dlvyment',function(req,res){
+app.post('/dlvyment', login_check, function(req,res){
   db.collection('order').updateOne(
     { _id : req.body.order_num , status : "ok", },  { $set: {
         dlvy_num :  req.body.dlvy_num,
@@ -688,8 +693,6 @@ app.post('/dlvyment',function(req,res){
 
 
 app.get('/track/:url', function(req, res){
-  console.log(req.params);
-
     axios({
       method: 'get',
       url: `http://info.sweettracker.co.kr/api/v1/trackingInfo?t_key=${process.env.tracker_key}&t_code=04&t_invoice=${req.params.url}`,
@@ -697,26 +700,21 @@ app.get('/track/:url', function(req, res){
          'Content-Type': 'application/json; charset=UTF-8'
       }
    }).then((response) => {
-      console.log(response);
       res.render("trackView", { res : response } );
    })
    .catch((response) => console.log('error', response));
 
 
  
+});
 
 
-
+app.all('*',
+    function (req, res)
+    {
+        res.status(404).send();
+    }
+);
  
-});
 
 
-app.post('/track/:url',function(req, res){
-
-  console.log(req.params);
-
-  res.send('성공');
-     
-  //code의 경우 대한통운으로 설정되어있음.
-
-});
