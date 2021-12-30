@@ -43,10 +43,10 @@
             </div>
 
             <div class="button-wrap">
-                <input type="button" class="img-add" value="+">      
+                <button type="button" class="img-add" value="+">+</button>
                 <input type="file" id="img-file" name="imgfile[]" data-num="0"  accept="image/*" style="display: none;" >
                 
-                <input type="button" class="img-edit" value="+" style="display: none;">   
+                <button type="button" class="img-edit" value="+" style="display: none;">+</button>
                 <input type="file" id="edit-file" name="editfile"  accept="image/*" style="display: none;">
             </div>
 
@@ -224,8 +224,8 @@
        add_count = 0;
 
        $('.add-form input').val('');
- 
-       $(".img-edit,.edit-button, .del-button, .result-input").show();
+      
+       $(".img-edit, .edit-button, .del-button, .result-input").show();
        $(".list-wrap, .add-button, .link-button, .img-add").hide();
     
 

@@ -47,24 +47,36 @@
                 <% if(order[i].status == 'ok'){ %>
                     <p>결제완료</p>
                     <p>결제금액 : <%= order[i].totalpay %>원</p>
-                   <% } if(order[i].status == 'dlvy_ing'){ %>
+                   <% } else if(order[i].status == 'dlvy_ing'){ %>
                     <p>배송중</p>
                     
+                    <p>결제금액 : <%= order[i].totalpay %>원</p>
+                    <% } else{  %>
+                    <p>입금 전</p>
                     <p>결제금액 : <%= order[i].totalpay %>원</p>
                     <% } %>
               </div>
              <% if(order[i].count.length <= 1){ %>    
             <div class="out-box">
                 <div class="in-box">
-                <img src="/public/image/main/item/<%= item[i].이미지 %>">
+                <% for(var j = 0; j < item.length; ++j){ 
+                  if(item[j]._id == order[i].item_id){ %>
+                   <img src="/public/image/main/item/<%= item[j].이미지 %>">
+                <% } %>
+                <% } %>
                 <p><%= order[i].item_name %> <%= order[i].count %>개 <%= order[i].item_price %>원 </p>
+               
             </div>
-             </div>
+             </div>              
             <% }else{ %>
            <div class="out-box">
             <% for(var j=0; j < order[i].count.length; ++j){ %>
             <div class="in-box">
-            <img src="/public/image/main/item/<%= item[j].이미지 %>">
+                <% for(var k = 0; k < item.length; ++k){ 
+                    if(item[k]._id == order[j].item_id){ %>
+                     <img src="/public/image/main/item/<%= item[k].이미지 %>">
+                  <% } %>
+                  <% } %>
             <p><%= order[i].item_name[j] %> <%= order[i].count[j] %>개 <%= order[i].item_price[j] %>원 </p>
              </div>
             <% } %>

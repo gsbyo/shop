@@ -128,6 +128,7 @@
                     buyer_addr: '대구광역시 **** - ****',
                     buyer_postcode: '123-456',
                 }, function (rsp) {
+                    console.log(rsp);
                     if (rsp.success) {
                         $.ajax({
                             method: 'post',
@@ -138,10 +139,12 @@
                                 item_id: id,
                                 pay_method : method
                             }
-                        }).success(function (res){
-                           
-                        }).fail(function (err){
-                            alert(err);
+                        }).done(function (res) {
+                           if(res == "success"){
+                            location.replace('/order');
+                           }
+                        }).fail(function (err) {
+                           alert(err);
                         });
                     }
                     else{

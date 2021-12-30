@@ -1,14 +1,13 @@
 const express = require('express');
 const axios = require('axios');
-const ajax = require('ajax');
 const app = express();
-
 
 const helmet = require("helmet");
 
 require('dotenv').config();
 
 app.set('view engine', 'ejs');
+
 
 
 const bodyParser= require('body-parser')
@@ -30,13 +29,14 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const session = require('express-session');
 
+
 app.use(session({
   secret : 'secretcode', 
-  resave : true, 
+  resave : false, 
   saveUninitialized: false,
-  cookie: {
-    }
+
 }));
+
 app.use(passport.initialize());
 app.use(passport.session()); 
 
@@ -71,8 +71,11 @@ passport.deserializeUser(function (input_id, done) {
 
 function login_check(req, res, next) {
   if (req.user) {
-    next();
+   next();
+   
+ 
   } else {
+    
     res.render('loginView');
   }
 }
@@ -91,6 +94,11 @@ MongoClient.connect(process.env.DB_URL, function(err, client){
       console.log('listening on 3000')
     });
 })
+
+
+
+
+
 
 
 //multer
@@ -117,6 +125,8 @@ const { urlencoded } = require('body-parser');
 const e = require('express');
 const { ESRCH } = require('constants');
 const { application } = require('express');
+const { MongoDBStore } = require('connect-mongodb-session');
+const { List } = require('iamport-rest-client-nodejs/dist/response');
 
 
 var upload = multer({
@@ -135,13 +145,14 @@ var upload = multer({
 
 
 
-
 //로그인
 app.get('/login',  function(req, res){
   if(req.user){
-    res.redirect('/home')
-  }else{
     res.render('loginView');
+   
+ }else{
+    res.render('loginView');
+    
   }   
 });
 
@@ -152,8 +163,28 @@ app.get('/fail', function(req, res){
 })
 
 app.post('/login', passport.authenticate('local', {failureRedirect : '/fail'}), function(req, res){
-   if(req.query.query){
+  var str = `{"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"passport":{"user":"${req.user.id}"}}`
+  
+  
+  db.collection('sessions').findOne(
+    {session : str}
+   ,function(err, res){
+     if(err) return console.log(err);
+     
+     if(res != null){ 
+       db.collection('sessions').deleteOne({_id : res._id });
+       //삭제하면 로그아웃이 되는 이유가 세션자체가 같기때문임
+       //다른유저가 동일한 아이디로 로그인하더라도 _id가 다른 세션이 생성되기때문에
+       //그런데 세션이 두개있는것중에 어떤게 지워지는거임 ?
+       //나중에 테스트를 해볼필요가 있음.
+     }
+     
+   });
+  
+  
+  if(req.query.query){
     res.redirect(req.query.query);
+    
    }else{
     res.redirect('/home');
    }
@@ -395,7 +426,6 @@ app.get('/cart/pay/:id',login_check, function(req, res){
 
   var item = req.query.items.split('%'); 
 
-
   var id = [];
   var count = [];
   var name = [];
@@ -450,7 +480,7 @@ app.delete('/cart/del', login_check, function (req, res) {
 
 
 
-app.post('/payment/update', login_check, function(req, res){
+app.post('/payment/update', login_check, async function(req, res){
 
 var id = parseInt(req.body.item_id);
 
@@ -465,6 +495,8 @@ db.collection('order').updateOne(
 
     db.collection('order').findOne({imp_uid : req.body.imp_uid }, async function(err, db_res){
       try {
+
+      
         const { imp_uid, merchant_uid } = req.body; // req의 body에서 imp_uid, merchant_uid 추출
         // 액세스 토큰(access token) 발급 받기
         const getToken = await axios({
@@ -487,11 +519,13 @@ db.collection('order').updateOne(
       
         const paymentData = getPaymentData.data.response; // 조회한 결제 정보      
       
+        console.log(paymentData.amount);
+
         if(paymentData.amount = db_res.totalpay){
           db.collection('order').updateOne(
             { imp_uid : paymentData.imp_uid}, 
              { $set: {
-                status : 'ok'} 
+                status : 'vbank_ready'} 
             });
         }else{
           db.collection('order').updateOne(
@@ -509,8 +543,7 @@ db.collection('order').updateOne(
 
       
   });
-
-
+    res.send('success');
 });
 
 
@@ -644,28 +677,33 @@ app.delete('/edit',function(req, res){
 
 
 
-app.get('/mypage/order',login_check, function(req, res){
+app.get('/mypage/order',login_check,  function(req, res){
   //여기서 order에서 staus가 ok, ready인 부분을 가져옴.
 
-db.collection('order').find( {status : { $in : ['ok','dlvy_ing']  }, user : req.user.id } ).toArray(function(err,db_res){
+db.collection('order').find( {status : { $in : ['ok','dlvy_ing', 'vbank_ready']  }, user : req.user.id } ).toArray(function(err,db_res){
   var item_id = [];
-
+  var imgs = [];
+  var img;
   db_res.forEach(element => {
-     item_id.push(element.item_id);
+    if(element.item_id.length > 1){
+      item_id.push(...element.item_id);
+    }
+    item_id.push(element.item_id);
   });
 
-   db.collection('item').find({ _id : { $in : item_id }},{projection:{ _id: 0, '이미지' : 1 }}).toArray(function(err, db_res2){
+  db.collection('item').find({_id : {$in : item_id}}).toArray(function(err, db_res2){
     res.render('mypageView',{ order : db_res, item : db_res2, 사용자 : req.user.id});
 
-   });
- 
+  })
 
+ 
+   
   
-  
+  });
 });
 
  
-});
+
 
 app.get('/dlvyment',login_check, function(req, res){
   db.collection('order').find({ status : 'ok'}).toArray(function(err,db_res){
@@ -692,6 +730,7 @@ app.post('/dlvyment', login_check, function(req,res){
 
 
 
+
 app.get('/track/:url', function(req, res){
     axios({
       method: 'get',
@@ -709,12 +748,38 @@ app.get('/track/:url', function(req, res){
 });
 
 
+app.get('/test',function(req, res){
+  res.render("testView");
+
+})
+
+app.post('/admin/*', auth_check);
+
+
+app.post('/admin/add',function(req, res){
+   res.send("테스트완료");
+})
+
+function auth_check(req, res, next){
+
+if(!req.user) res.status(404).send(); 
+
+if(req.user.auth == "admin"){
+   next();
+}else{
+ res.status(404).send();
+}
+
+}
+
+
+
+
 app.all('*',
     function (req, res)
     {
         res.status(404).send();
     }
 );
- 
 
 
