@@ -102,12 +102,12 @@ input:focus {
     outline: none;
 }
 
-.search-input{
+.search-box{
     position: relative;
     
 }
 
-.search-input i{
+.search-box i{
     position: absolute;
     top:17px;
     left: 10px;
@@ -115,7 +115,7 @@ input:focus {
 }
 
   
-.search-text{
+#search-text{
     border-radius: 10px;
     height: 30px; 
     border: 0.5px solid white;

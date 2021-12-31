@@ -68,8 +68,8 @@
             <li><a href="/items/list?way=new">신상품</a></li>
             <li><a href="/items/list?way=best">베스트</a></li>
             <li>
-                <div class="search-input">
-                <input type="text" class="search-text" onKeypress="javascript:if(event.keyCode==13) {search()}"/>
+                <div class="search-box">
+                <input type="text" id="search-text" onKeypress="javascript:if(event.keyCode==13) {search('search-text')}"/>
                 <i class="fas fa-search"></i>
                 <i class="far fa-times-circle search-circle" style="left:180px; display:none;"></i>
             </div>
@@ -97,8 +97,8 @@
       // $('.add-button').show();
     }
     
-    $('.search-text').on("propertychange change keyup paste input",function(){
-        if($('.search-text').val() == ""){
+    $('#search-text').on("propertychange change keyup paste input",function(){
+        if($('#search-text').val() == ""){
             $('.search-circle').hide();
         }else{
             $('.search-circle').show();
@@ -106,17 +106,17 @@
     });
 
     $('.search-circle').on('click', function(){
-        $('.search-text').val("");
+        $('#search-text').val("");
         $('.search-circle').hide();
-        $('.search-text').focus();
+        $('#search-text').focus();
     })
 
     $('.fa-search').on('click',function(){
-        search();
+        search('search-text');
     })
 
-    function search() {
-        var value = $('.search-text').val();
+    function search(input_name) {
+        var value = $('#'+input_name).val();
         if(value == ""){
             alert('검색어를 입력해주세요');
         }else{
