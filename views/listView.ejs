@@ -28,14 +28,14 @@
              </div>
          </div>
     <%}%>
-    <div class="page-box">
+    
 
-    </div>
+    <div class="page-box">
 
 
      </div>
 
- </div>
+ 
 
 
 
@@ -44,43 +44,70 @@
 
 <script>
     var 게시글총개수 = '<%= totalcount %>'  
-    var cur_page = 1; // 현재 페이지 
+   
     var view_num = 8; // 페이지 안에 보여줄 글의 개수
-    var page_num = 5; // 한번에 페이지를 몇개 보여줄 것인지
+    var page_num = 5 ; //페이징을 몇개 단위씩 보여줄건지
+    var paging;//페이징 계산 단위
 
 
     var page_limit = Math.ceil(게시글총개수 / view_num); // 총 페이지 개수
 
     var path = "";   
-    var link_num = $(location).attr('pathname').split('/')[4] //현재 페이지
+    var cur_page = $(location).attr('pathname').split('/')[4]  //현재 페이지
 
-    if(link_num > 1){  
+    
+    if(cur_page > 1){  
         path = $(location).attr('pathname').split('/')[3];
+        console.log(cur_page);
     }else{
         path = $(location).attr('search').split('=')[1];
+        cur_page  = 1;
     }
-   
       
-    for (let i = 1; i <= page_limit; ++i){
-        if(i == 1){
-            $('.page-box').append(`<a class='active-link' style="margin-right:5px" href="/items/list?way=${path}">${i}</a>`);
-        }else{
-           
-            $('.page-box').append(`<a style="margin-right:5px" href="/items/list/${path}/${i}">${i}</a>`);
-        }
-    
+   
+    paging = page_num * Math.ceil(cur_page / page_num);
+    start_paging = page_num * ( Math.ceil(cur_page / page_num) - 1 ) + 1;
+    if(paging >= page_limit){
+        paging = page_limit;
     }
-     
-  
 
-    if(link_num > 1){ 
-    $('.page-box a').removeClass('active-link');
-    $('.page-box a').eq(link_num - 1).addClass('active-link');
+
+    // 5 - > 10 -> 15
+   
+    for (let i = start_paging; i <= paging;  ++i){
+        if(i == 1){
+            $('.page-box').append(`<a class='num-link active-link' style="margin-right:5px" href="/items/list?way=${path}">${i}</a>`);
+        }else{
+            $('.page-box').append(`<a class='num-link' style="margin-right:5px" href="/items/list/${path}/${i}">${i}</a>`);
+        }
     }
+
+  
+    
+    //이전 버튼
+    if(cur_page != 1){
+        if(cur_page != 2){
+            $('.page-box').prepend(`<a href="/items/list/${path}/${parseInt(cur_page)-1}"><</a>`);
+        }else{
+            $('.page-box').prepend(`<a href="/items/list?way=${path}"><</a>`);
+        }
+        
+    }
+
+    // 다음버튼
+    if(cur_page < page_limit){
+    $('.page-box').append(`<a href="/items/list/${path}/${parseInt(cur_page)+1}">></a>`);
+    }
+
+
+    if(cur_page > 1){ 
+    $('.num-link').removeClass('active-link');
+    $('.num-link').eq((cur_page % 5)-1).addClass('active-link');
+    }
+
+
 
    
-
-    //a링크를 클릭했을때 cur_page가 a링크의 숫자로 바꿔야함.
     
 
    

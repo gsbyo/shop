@@ -73,7 +73,7 @@
             <% for(var j=0; j < order[i].count.length; ++j){ %>
             <div class="in-box">
                 <% for(var k = 0; k < item.length; ++k){ 
-                    if(item[k]._id == order[j].item_id){ %>
+                    if(item[k]._id == order[i].item_id[j]){ %>
                      <img src="/public/image/main/item/<%= item[k].이미지 %>">
                   <% } %>
                   <% } %>

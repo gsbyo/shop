@@ -217,7 +217,6 @@ app.get('/items/list', function (req, res) {
       toltalcount = db_res;
       db.collection('item').find().sort({ _id : 1 }).limit(view_count).toArray(
         function (err, db_res2) {
-      
           
 
         if(req.user){
@@ -247,13 +246,21 @@ app.get('/items/list', function (req, res) {
 
 
 app.get('/items/list/new/:id', function (req, res) {
+    
+  if( req.params.id == 1) return res.status(404).send();
+    
+  
   var totalcount = 0;
   var view_count = 8;
 
   db.collection('item').count(function (err, db_res) {
     totalcount  = db_res;
+
+    if( Math.ceil(totalcount / view_count) < req.params.id) return res.status(404).send();
+
     db.collection('item').find().sort({_id : 1}).limit(view_count).skip(view_count * (req.params.id - 1)).toArray(
       function (err, db_res2) {
+
       if(req.user){
         res.render('listView',{ posts: db_res2, totalcount : totalcount , 사용자 : req.user.id });
       }else{
@@ -264,10 +271,16 @@ app.get('/items/list/new/:id', function (req, res) {
 });
 
 app.get('/items/list/best/:id', function (req, res) {
+
+  if( req.params.id == 1) return res.status(404).send();
+
   var totalcount = 0;
   var view_count = 8;
   db.collection('item').count(function (err, db_res) {
     totalcount = db_res;
+
+    if( Math.ceil(totalcount / view_count) < req.params.id) return res.status(404).send();
+
     db.collection('item').find().sort({_id : -1}).limit(view_count).skip(view_count * (req.params.id - 1)).toArray(
       function (err, db_res2) {
       
@@ -284,7 +297,9 @@ app.get('/items/list/best/:id', function (req, res) {
 //상품 구매페이지
 app.get('/items/detail/:id', function (req, res) {
   db.collection('item').findOne({ _id : parseInt(req.query.itemid)},function(err, db_res){
-        
+
+    if(db_res == null) return res.status(404).send();   
+
     if(req.user){
       res.render('productView', {post : db_res, 사용자: req.user.id});
     }else{
@@ -491,58 +506,62 @@ db.collection('order').updateOne(
       merchant_uid : req.body.merchant_uid, 
       pay_method : req.body.pay_method
    }
+  }, function(err, db_res){
+
+    db.collection('order').findOne({imp_uid : req.body.imp_uid }, async function(err, db_res2){
+      console.log(db_res2);
+ try {
+
+   
+   const { imp_uid, merchant_uid } = req.body; // req의 body에서 imp_uid, merchant_uid 추출
+   // 액세스 토큰(access token) 발급 받기
+   const getToken = await axios({
+     url: "https://api.iamport.kr/users/getToken",
+     method: "post", // POST method
+     headers: { "Content-Type": "application/json" }, // "Content-Type": "application/json"
+     data: {
+       imp_key: "imp_apikey", // REST API 키
+       imp_secret: process.env.import_key// REST API Secret
+     }
+   });
+   const { access_token } = getToken.data.response; // 인증 토큰    
+   // imp_uid로 아임포트 서버에서 결제 정보 조회
+   //db를 가져와서 imp_id를 조회하면된다. status가 'ok'
+   const getPaymentData = await axios({
+     url: 'https://api.iamport.kr/payments/'+imp_uid, // imp_uid 전달
+     method: "get", // GET method
+     headers: { "Authorization": access_token } // 인증 토큰 Authorization header에 추가
+   });
+ 
+   const paymentData = getPaymentData.data.response; // 조회한 결제 정보      
+ 
+
+   if(paymentData.amount = db_res2.totalpay){
+     db.collection('order').updateOne(
+       { imp_uid : paymentData.imp_uid}, 
+        { $set: {
+           status : 'vbank_ready'} 
+       });
+   }else{
+     db.collection('order').updateOne(
+       { imp_uid : paymentData.imp_uid}, 
+        { $set: {
+           status : 'false'} 
+       }); 
+   }
+
+
+ } catch (e) {
+   res.status(400).send(e);
+ }
+
+
+ 
+});
+
   });
 
-    db.collection('order').findOne({imp_uid : req.body.imp_uid }, async function(err, db_res){
-      try {
-
-      
-        const { imp_uid, merchant_uid } = req.body; // req의 body에서 imp_uid, merchant_uid 추출
-        // 액세스 토큰(access token) 발급 받기
-        const getToken = await axios({
-          url: "https://api.iamport.kr/users/getToken",
-          method: "post", // POST method
-          headers: { "Content-Type": "application/json" }, // "Content-Type": "application/json"
-          data: {
-            imp_key: "imp_apikey", // REST API 키
-            imp_secret: process.env.import_key// REST API Secret
-          }
-        });
-        const { access_token } = getToken.data.response; // 인증 토큰    
-        // imp_uid로 아임포트 서버에서 결제 정보 조회
-        //db를 가져와서 imp_id를 조회하면된다. status가 'ok'
-        const getPaymentData = await axios({
-          url: 'https://api.iamport.kr/payments/'+imp_uid, // imp_uid 전달
-          method: "get", // GET method
-          headers: { "Authorization": access_token } // 인증 토큰 Authorization header에 추가
-        });
-      
-        const paymentData = getPaymentData.data.response; // 조회한 결제 정보      
-      
-        console.log(paymentData.amount);
-
-        if(paymentData.amount = db_res.totalpay){
-          db.collection('order').updateOne(
-            { imp_uid : paymentData.imp_uid}, 
-             { $set: {
-                status : 'vbank_ready'} 
-            });
-        }else{
-          db.collection('order').updateOne(
-            { imp_uid : paymentData.imp_uid}, 
-             { $set: {
-                status : 'false'} 
-            }); 
-        }
-
-  
-      } catch (e) {
-       // res.status(400).send(e);
-      }
-
-
-      
-  });
+     
     res.send('success');
 });
 
