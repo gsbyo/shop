@@ -162,6 +162,16 @@ app.get('/fail', function(req, res){
 
 })
 
+app.post('/login', passport.authenticate('local', {failureRedirect : '/fail'}), function(req, res){
+  var str = `{"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"passport":{"user":"${req.user.id}"}}`
+  
+  if(req.query.query){
+    res.redirect(req.query.query);
+    
+   }else{
+    res.redirect('/home');
+   }
+});
 
 app.get('/logout', function (req, res) {
   req.logout();
