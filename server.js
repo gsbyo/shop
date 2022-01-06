@@ -166,21 +166,7 @@ app.post('/login', passport.authenticate('local', {failureRedirect : '/fail'}), 
   var str = `{"cookie":{"originalMaxAge":null,"expires":null,"httpOnly":true,"path":"/"},"passport":{"user":"${req.user.id}"}}`
   
   
-  db.collection('sessions').findOne(
-    {session : str}
-   ,function(err, res){
-     if(err) return console.log(err);
-     
-     if(res != null){ 
-       db.collection('sessions').deleteOne({_id : res._id });
-       //삭제하면 로그아웃이 되는 이유가 세션자체가 같기때문임
-       //다른유저가 동일한 아이디로 로그인하더라도 _id가 다른 세션이 생성되기때문에
-       //그런데 세션이 두개있는것중에 어떤게 지워지는거임 ?
-       //나중에 테스트를 해볼필요가 있음.
-     }
-     
-   });
-  
+
   
   if(req.query.query){
     res.redirect(req.query.query);
