@@ -37,7 +37,7 @@
 
   <div class="container">
     <p style="text-align: left; opacity: 0.5;">* 상품 추가의 경우 동시에 4개까지만 등록 가능합니다.</p>
-      <form class="add-form box-1" id='add-form' method="post" enctype='multipart/form-data' action="/add_img/main/item">
+      <form class="add-form box-1" id='add-form' method="post" enctype='multipart/form-data' action="/admin/edit/add/item">
           <div class="img-box"> 
             <div class="img-wrap">
             </div>
@@ -146,8 +146,8 @@
     }
     
     $.ajax({
-            method: 'post',
-            url: '/edit',
+            method: 'put',
+            url: '/admin/edit',
             data: { 
                 _id : _id ,
                 상품 : 상품명,
@@ -179,7 +179,7 @@
 
     $.ajax({
             method: 'delete',
-            url: '/edit',
+            url: '/admin/edit',
             data: { item_id : del_item },
         }).done(function (res) {
              if(res == 'success'){
@@ -215,9 +215,9 @@
        $('.search-wrap').children().remove();
        $('.list-wrap').show();
 
-       $(".add-form").attr("action", "/add_img/main/item");
+       $(".add-form").attr("action", "admin/edit/add/item");
        
-     
+    
     }else{
        is_edit = true;
        상품데이터 = [];
@@ -237,7 +237,7 @@
        $('.list-wrap').children().remove();
        $('.search-wrap').show();
 
-       $(".add-form").attr("action", "/edit_img/main/item");
+       $(".add-form").attr("action", "admin/edit/change/item");
      
     }
   })
@@ -252,7 +252,7 @@
 
             $.ajax({
                 method: 'get',
-                url: '/edit/' + word,
+                url: 'edit/search/' + word,
                 success: function (res) {
                     for (var i = 0; i < res.length; ++i) {
 
@@ -470,7 +470,7 @@ $(document).on('change',"#img-file, #edit-file",function(){
     $('.link-button').click(function (){
         $.ajax({
             method: 'post',
-            url: '/add_item',
+            url: '/admin/edit',
             data: { 상품 : 상품데이터 }
 
         }).done(function (res) {

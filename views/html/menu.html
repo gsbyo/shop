@@ -37,20 +37,30 @@
 
     <div class="logo">
         <img src="/public/image/logo2.JPG" style="width: 200px;">
-        <div class="member">
-            <a href="/login">로그인</a>
-            <a style="margin-left: 20px; margin-right: 10px; margin-bottom: 5px;">회원가입</a>
-        </div>
-        <div class="user-container" style="display: none; margin-right: 10px; padding: 10px; text-align: right;">        
+        <% if(isAuthenticated){ %>
+        <div class="user-container" style="margin-right: 10px; padding: 10px; text-align: right;">        
             <div class="user">
+                <a><%= currentUser.id %>님 환영합니다.</a>
             </div> 
+            <% if(currentUser.auth == "admin"){ %>
             <div  style="margin-top: 10px;">
             <button class="basic-btn btn btn-primary" onclick="location.href='/review'">리뷰등록</button>
-            <button class="basic-btn btn btn-primary" onclick="location.href='/dlvyment'">주문관리</button>
-            <button class="basic-btn btn btn-primary " onclick="location.href='/new'">상품관리</button>
+            <button class="basic-btn btn btn-primary" onclick="location.href='/admin/dlvyment'">주문관리</button>
+            <button class="basic-btn btn btn-primary " onclick="location.href='/admin/edit'">상품관리</button>
             <button class="basic-btn btn btn-primary" onclick="location.href='/logout'">로그아웃</button>
             </div>
+            <% }else{  %>
+            <div  style="margin-top: 10px;">
+                <button class="basic-btn btn btn-primary" onclick="location.href='/logout'">로그아웃</button>
+            </div>
+            <% } %>
         </div>
+        <% }else{ %>
+            <div class="member">
+                <a href="/login">로그인</a>
+                <a style="margin-left: 20px; margin-right: 10px; margin-bottom: 5px;">회원가입</a>
+            </div>
+        <% } %>
     </ul>
     </div>
     <div class="top-menu">
@@ -83,20 +93,7 @@
 </div>
    
 <script>
-    const user = '<%= 사용자 %>'; 
- 
-    if(user == ''){
-        $('.user-container').hide();
-        $('.member').show();
-    }else{
-        $('.user-container').show();
-        $('.user').append(
-            `<a>${user}님 환영합니다.</a>`
-        )
-        $('.member').hide();
-      // $('.add-button').show();
-    }
-    
+
     $('#search-text').on("propertychange change keyup paste input",function(){
         if($('#search-text').val() == ""){
             $('.search-circle').hide();

@@ -24,7 +24,7 @@
             <li class="option selected" data-num="<%= item[0]._id %>">상품 번호 <%= item[0]._id %></li>
             <% for(var i = 1; i < item.length; ++i){ %>
                 <% if(item.length > 4) return; %>
-            <li class="option" data-num="상품 번호 <%= item[i]._id %>">상품 번호 <%= item[i]._id %></li>
+            <li class="option" data-num="<%= item[i]._id %>">상품 번호 <%= item[i]._id %></li>
             <% } %>
 
             <% } %>
@@ -51,7 +51,7 @@
                         </div>
                     </div>
                     <form class="re-form" id='re-form' method="post" enctype='multipart/form-data'
-                        action="/review_add/test/review">
+                        action="/review/review">
                         <div class="img-input">
                             <input type="file" id="file" name="file[]" data-num="0" style="display: none;">
                     </form>
@@ -147,7 +147,6 @@
                         ++file_id;
                         ++file_count;
 
-
                         $('.img-input').append(`
                                <input type="file" id="file" name="file[]" data-num=${file_id} style="display: none;">
                         `)
@@ -166,8 +165,7 @@
                   
                 }
 
-     
-
+    
 
         $(document).on('change', '#file',function(){
             readInputFile(this);
@@ -179,7 +177,7 @@
             var content = $('#content').val();
             var review_id = $('.selected').data('num');
        
-        
+            console.log(review_id);
 
             $.ajax({
                 method: 'post',
@@ -190,9 +188,10 @@
                     title: title,
                     content: content
                 }
-            }).done(function (결과) {
-            }).fail(function (에러) {
-                alert(에러);
+            }).done(function (res) {
+                alert("전송완료")
+            }).fail(function (arr) {
+                alert(arr);
             });
 
             $('.re-form').submit();
