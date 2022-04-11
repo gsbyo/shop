@@ -1,5 +1,6 @@
 # shop
 
+Node.js - mongodb - ejs를 활용한 데모 쇼핑몰 입니다.
 
 test / test 로그인
 
